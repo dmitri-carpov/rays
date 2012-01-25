@@ -1,0 +1,5 @@
+Rays is a command line tool which makes Liferay development easier and more fun.
+Inspired by Ruby on Rails.
+
+TO BE CONTINUED ...
+
