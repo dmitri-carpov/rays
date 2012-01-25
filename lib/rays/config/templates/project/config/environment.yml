@@ -1,0 +1,54 @@
+local:
+    liferay:
+        host: localhost
+        port: 8080
+        deploy: /opt/liferay-portal/deploy
+        ssh:
+            port: 22
+            user: liferay
+        java:
+            home: /usr/lib/jvm/java-6-sun
+            bin: /usr/bin/java
+        service:
+            path: /opt/liferay-portal/tomcat
+            start_command: bin/startup.sh
+            stop_command: bin/shutdown.sh
+            log_file: logs/catalina.out
+    database:
+        host: localhost
+        port: 3306
+        type: mysql
+        name: liferay
+        username: root
+        password: ""
+    solr:
+        host: localhost
+        port: 8085
+        url: solr
+test:
+    liferay:
+        host: localhost
+        port: 8080
+        deploy: /opt/liferay-portal-test/deploy
+        ssh:
+            port: 22
+            user: liferay
+        java:
+            home: /usr/lib/jvm/java-6-sun
+            bin: /usr/bin/java
+        appserver:
+            path: /opt/liferay-portal-test/tomcat
+            start_command: bin/startup.sh
+            stop_command: bin/shutdown.sh
+            log_file: logs/catalina.out
+    database:
+        host: localhost
+        port: 3306
+        type: mysql
+        name: liferay_test
+        username: root
+        password: ""
+    solr:
+        host: localhost
+        port: 8085
+        url: solr-test

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+rays() {
+	if [[ $# > 0 && "go" == $1 ]] ;then
+		cd `__rays_exec.rb $@`
+	else
+		__rays_exec.rb $@
+	fi
+}

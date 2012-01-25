@@ -1,0 +1,2 @@
+class RaysException < RuntimeError
+end
