@@ -18,7 +18,7 @@ describe 'rays deploy' do
       FileUtils.mkdir_p(@deploy_dir)
     end
 
-    stub_remote @deploy_dir
+    #stub_remote @deploy_dir
   end
 
   describe 'no parameters' do
@@ -46,7 +46,7 @@ describe 'rays deploy' do
       end
       in_directory(hierarchy_test_dir) do
         Rays::Core.instance.reload
-        stub_remote @deploy_dir
+        #stub_remote @deploy_dir
         lambda { command.run(%w(deploy)) }.should_not raise_error
       end
       module_instances.each do |module_instance|
@@ -61,7 +61,7 @@ describe 'rays deploy' do
       module_types[:layout].should_not_receive(:new)
       in_directory(module_instance.path) do
         Rays::Core.instance.reload
-        stub_remote @deploy_dir
+        #stub_remote @deploy_dir
         lambda { command.run(%w(deploy)) }.should_not raise_error
       end
       is_deployed(module_instance).should be_true
@@ -74,7 +74,7 @@ describe 'rays deploy' do
       module_types[:theme].should_not_receive(:new)
       in_directory(File.join(module_instance.path, 'src')) do
         Rays::Core.instance.reload
-        stub_remote @deploy_dir
+        #stub_remote @deploy_dir
         lambda { command.run(%w(deploy)) }.should_not raise_error
       end
       is_deployed(module_instance).should be_true
@@ -109,7 +109,7 @@ describe 'rays deploy' do
       module_instance = generate(:portlet, name).first
       in_directory(module_instance.path) do
         Rays::Core.instance.reload
-        stub_remote @deploy_dir
+        #stub_remote @deploy_dir
         lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
       end
       is_deployed(module_instance).should be_true
@@ -120,7 +120,7 @@ describe 'rays deploy' do
       module_instance = generate(:portlet, name).first
       in_directory(File.join(module_instance.path, 'src')) do
         Rays::Core.instance.reload
-        stub_remote @deploy_dir
+        #stub_remote @deploy_dir
         lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
       end
       is_deployed(module_instance).should be_true
@@ -134,6 +134,10 @@ describe 'rays deploy' do
         lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should raise_error
       end
       is_deployed(module_instance).should be_false
+    end
+
+    it 'should deploy to remote' do
+      pending
     end
   end
 
@@ -155,7 +159,7 @@ describe 'rays deploy' do
       module_instance = generate(:hook, name).first
       in_directory(module_instance.path) do
         Rays::Core.instance.reload
-        stub_remote @deploy_dir
+        #stub_remote @deploy_dir
         lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
       end
       is_deployed(module_instance).should be_true
@@ -166,7 +170,7 @@ describe 'rays deploy' do
       module_instance = generate(:hook, name).first
       in_directory(File.join(module_instance.path, 'src')) do
         Rays::Core.instance.reload
-        stub_remote @deploy_dir
+        #stub_remote @deploy_dir
         lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
       end
       is_deployed(module_instance).should be_true
@@ -201,7 +205,7 @@ describe 'rays deploy' do
       module_instance = generate(:theme, name).first
       in_directory(module_instance.path) do
         Rays::Core.instance.reload
-        stub_remote @deploy_dir
+        #stub_remote @deploy_dir
         lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
       end
       is_deployed(module_instance).should be_true
@@ -212,7 +216,7 @@ describe 'rays deploy' do
       module_instance = generate(:theme, name).first
       in_directory(File.join(module_instance.path, 'src')) do
         Rays::Core.instance.reload
-        stub_remote @deploy_dir
+        #stub_remote @deploy_dir
         lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
       end
       is_deployed(module_instance).should be_true
@@ -247,7 +251,7 @@ describe 'rays deploy' do
       module_instance = generate(:layout, name).first
       in_directory(module_instance.path) do
         Rays::Core.instance.reload
-        stub_remote @deploy_dir
+        #stub_remote @deploy_dir
         lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
       end
       is_deployed(module_instance).should be_true
@@ -258,7 +262,7 @@ describe 'rays deploy' do
       module_instance = generate(:layout, name).first
       in_directory(File.join(module_instance.path, 'src')) do
         Rays::Core.instance.reload
-        stub_remote @deploy_dir
+        #stub_remote @deploy_dir
         lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
       end
       is_deployed(module_instance).should be_true

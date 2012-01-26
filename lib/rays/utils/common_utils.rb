@@ -68,6 +68,13 @@ def rays_exec(command)
 end
 
 #
+# Safe execute. Use it for user input commands.
+#
+def rays_safe_exec(command, *args)
+  SafeShell.execute(command, *args)
+end
+
+#
 # Execute a given code a directory.
 #
 def in_directory(directory)
@@ -85,5 +92,12 @@ end
 #
 def missing_environment_option(name, option)
   "#{name} does not contain #{option} information. see config/environment.yml"
+end
+
+#
+# Check if command in the PATH
+#
+def command?(command)
+  system("which #{ command} > /dev/null 2>&1")
 end
 

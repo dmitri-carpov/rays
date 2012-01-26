@@ -6,9 +6,12 @@ module Rays
       class Maven < BaseWorker
         include Singleton
 
-        def build(app_module)
+        def build(app_module, skip_test = false)
           execute('build', app_module) do
-            rays_exec('mvn clean package')
+            test_args = ''
+            test_args = '-Dmaven.skip.tests=true' if skip_test
+
+            rays_exec("#{$rays_config.mvn} clean package #{test_args}")
           end
         end
       end
@@ -17,13 +20,17 @@ module Rays
       class Content < BaseWorker
         include Singleton
 
-        def build(app_module)
+        def build(app_module, skip_test = false)
           execute('build', app_module) do
             # replace liferay server port
             properties_file = Rays::Utils::FileUtils::PropertiesFile.new "#{app_module.path}/src/main/resources/configuration.properties"
             properties_file.properties['server.port'] = $rays_config.environment.liferay.port
             properties_file.write
-            rays_exec("cd #{app_module.path} && mvn clean assembly:single package")
+
+            test_args = ''
+            test_args = '-Dmaven.skip.tests=true' if skip_test
+
+            rays_exec("cd #{app_module.path} && #{$rays_config.mvn} clean assembly:single package #{test_args}")
           end
         end
       end

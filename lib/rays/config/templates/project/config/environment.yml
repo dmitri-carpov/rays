@@ -3,9 +3,6 @@ local:
         host: localhost
         port: 8080
         deploy: /opt/liferay-portal/deploy
-        ssh:
-            port: 22
-            user: liferay
         java:
             home: /usr/lib/jvm/java-6-sun
             bin: /usr/bin/java
@@ -25,6 +22,11 @@ local:
         host: localhost
         port: 8085
         url: solr
+        service:
+            path: /opt/solr-server/apache-tomcat
+            start_command: bin/startup.sh
+            stop_command: bin/shutdown.sh
+            log_file: logs/catalina.out
 test:
     liferay:
         host: localhost

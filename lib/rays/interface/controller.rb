@@ -10,6 +10,7 @@ module Rays
     def create_project(project_name)
       log_block("create project #{project_name}") do
         Project.create project_name
+        $log.warn("setup your project environments in #{$rays_config.project_root}/config/environment.yml")
       end
     end
 
@@ -19,6 +20,7 @@ module Rays
     def init_project
       log_block("init project") do
         Project.init
+        $log.warn("setup your project environments in #{$rays_config.project_root}/config/environment.yml")
       end
     end
 
@@ -34,11 +36,11 @@ module Rays
     #
     # Build module(s)
     #
-    def build(modules = nil)
+    def build(skip_test, modules = nil)
       log_block("build module(s)") do
         unless modules.nil?
           modules.each do |app_module|
-            app_module.build
+            app_module.build skip_test
           end
         end
       end
@@ -47,11 +49,11 @@ module Rays
     #
     # Build and deploy module(s).
     #
-    def deploy(modules = nil)
+    def deploy(skip_test, modules = nil)
       log_block("build and deploy module(s)") do
         unless modules.nil?
           modules.each do |app_module|
-            app_module.build
+            app_module.build skip_test
             app_module.deploy
           end
         end
@@ -129,7 +131,6 @@ module Rays
         if !points.nil? and points.include?(point_name)
           dir = points[point_name]
           if Dir.exists?(dir)
-            #rays_exec("cd #{dir}")
             $log.info("<!#{dir}!>") # tricky part. it logs to shell the directory name which will be switch by a bash script.
           else
             raise RaysException
@@ -144,14 +145,14 @@ module Rays
     # Start liferay's application server
     #
     def liferay_start(force=false)
-      service = $rays_config.environment.liferay.service
-      if service.remote? and !force
-        $log.warn("WARNING: you are trying to start a remote server.")
-        $log.warn("Your current environment is <!#{$rays_config.environment.name}!>.")
-        $log.warn("Use <!--force!> option if you really want to start remote liferay server.")
-        return
-      end
       task('starting server', 'start command has been sent', 'failed to start the server') do
+        service = $rays_config.environment.liferay.service
+        if service.remote? and !force
+          $log.warn("WARNING: you are trying to start a remote server.")
+          $log.warn("Your current environment is <!#{$rays_config.environment.name}!>.")
+          $log.warn("Use <!--force!> option if you really want to start remote liferay server.")
+          return
+        end
         service.start
       end
     end
@@ -160,14 +161,14 @@ module Rays
     # Stop liferay's application server
     #
     def liferay_stop(force=false)
-      service = $rays_config.environment.liferay.service
-      if service.remote? and !force
-        $log.warn("WARNING: you are trying to stop a remote server.")
-        $log.warn("Your current environment is <!#{$rays_config.environment.name}!>.")
-        $log.warn("Use <!--force!> option if you really want to stop remote liferay server.")
-        return
-      end
       task('stopping server', 'stop command has been sent', 'failed to stop the server') do
+        service = $rays_config.environment.liferay.service
+        if service.remote? and !force
+          $log.warn("WARNING: you are trying to stop a remote server.")
+          $log.warn("Your current environment is <!#{$rays_config.environment.name}!>.")
+          $log.warn("Use <!--force!> option if you really want to stop remote liferay server.")
+          return
+        end
         service.stop
       end
     end
@@ -176,8 +177,9 @@ module Rays
     # Show liferay server status
     #
     def liferay_status
-      service = $rays_config.environment.liferay.service
       log_block('get server status') do
+        service = $rays_config.environment.liferay.service
+
         if service.alive?
           $log.info("running on #{service.host}:#{service.port}")
         else
@@ -190,8 +192,8 @@ module Rays
     # Show liferay server logs
     #
     def liferay_log
-      service = $rays_config.environment.liferay.service
       task('show server log', '', 'cannot access server log file') do
+        service = $rays_config.environment.liferay.service
         service.log
       end
     end
@@ -205,5 +207,60 @@ module Rays
       end
     end
 
+    #
+    # Start solr application server
+    #
+    def solr_start(force=false)
+      task('starting server', 'start command has been sent', 'failed to start the server') do
+        service = $rays_config.environment.solr.service
+        if service.remote? and !force
+          $log.warn("WARNING: you are trying to start a remote server.")
+          $log.warn("Your current environment is <!#{$rays_config.environment.name}!>.")
+          $log.warn("Use <!--force!> option if you really want to start a remote solr server.")
+          return
+        end
+        service.start
+      end
+    end
+
+    #
+    # Stop solr application server
+    #
+    def solr_stop(force=false)
+      task('stopping server', 'stop command has been sent', 'failed to stop the server') do
+        service = $rays_config.environment.solr.service
+        if service.remote? and !force
+          $log.warn("WARNING: you are trying to stop a remote server.")
+          $log.warn("Your current environment is <!#{$rays_config.environment.name}!>.")
+          $log.warn("Use <!--force!> option if you really want to stop a remote solr server.")
+          return
+        end
+        service.stop
+      end
+    end
+
+    #
+    # Show solr server status
+    #
+    def solr_status
+      log_block('get server status') do
+        service = $rays_config.environment.solr.service
+        if service.alive?
+          $log.info("running on #{service.host}:#{service.port}")
+        else
+          $log.info("stopped")
+        end
+      end
+    end
+
+    #
+    # Show solr server logs
+    #
+    def solr_log
+      task('show server log', '', 'cannot access server log file') do
+        service = $rays_config.environment.solr.service
+        service.log
+      end
+    end
   end
 end

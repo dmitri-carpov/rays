@@ -61,7 +61,7 @@ module Rays
       # Is the service running?
       # Returns true is the service is running or false otherwise
       def alive?
-        Utils::NetworkUtils.is_port_open?(@host, @port)
+        Utils::NetworkUtils.port_open?(@host, @port)
       end
 
       private

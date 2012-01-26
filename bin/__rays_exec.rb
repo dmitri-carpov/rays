@@ -2,7 +2,7 @@
 require 'rays/interface/commander'
 
 begin
-  RaysCommand.run("", ARGV, {})
+  RaysCommand.run('rays', ARGV, {})
 rescue => e
   # eat it.
 end

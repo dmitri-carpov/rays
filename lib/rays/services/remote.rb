@@ -35,11 +35,11 @@ module Rays
         end
 
         def copy_to(local_file, remote_file)
-          rays_exec("scp #{local_file} #{user}@#{host}:#{remote_file}")
+          rays_exec("#{$rays_config.scp} #{local_file} #{user}@#{host}:#{remote_file}")
         end
 
         def copy_from(remote_file, local_file)
-          rays_exec("scp #{user}@#{host}:#{remote_file} #{local_file}")
+          rays_exec("#{$rays_config.scp} #{user}@#{host}:#{remote_file} #{local_file}")
         end
 
         private

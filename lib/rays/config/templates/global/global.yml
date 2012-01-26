@@ -1,1 +1,3 @@
 ---
+maven_cmd: mvn
+scp_cmd: scp

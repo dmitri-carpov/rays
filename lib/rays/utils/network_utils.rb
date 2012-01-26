@@ -3,7 +3,7 @@ module Rays
     class NetworkUtils
       class << self
 
-        def is_port_open?(ip, port)
+        def port_open?(ip, port)
           begin
             Timeout::timeout(1) do
               begin

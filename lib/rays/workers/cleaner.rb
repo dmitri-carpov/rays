@@ -8,7 +8,7 @@ module Rays
 
         def clean(app_module)
           execute('clean', app_module) do
-            rays_exec('mvn clean')
+            rays_exec("#{$rays_config.mvn} clean")
           end
         end
 

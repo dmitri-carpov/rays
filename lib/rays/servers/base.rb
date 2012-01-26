@@ -27,6 +27,10 @@ module Rays
         @java_cmd
       end
 
+      def remote?
+        !@remote.nil?
+      end
+
       def remote
         raise RaysException.new(missing_environment_option(@name, 'remote access')) if @remote.nil?
         @remote

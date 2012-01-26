@@ -25,13 +25,13 @@ module Rays
 
     private
     def configure
-      require 'rays/config/environment'
-      require 'rays/config/configuration'
       $rays_config = Rays::Configuration.new
     end
 
     def load_system_wide_dependencies
       require 'rays/exceptions/rays_exception'
+      require 'rays/config/environment'
+      require 'rays/config/configuration'
     end
 
     def load_external_loaders
@@ -88,6 +88,8 @@ module Rays
       require 'rsolr'
       require 'socket'
       require 'timeout'
+      require 'highline'
+      require 'safe_shell'
     end
   end
 end

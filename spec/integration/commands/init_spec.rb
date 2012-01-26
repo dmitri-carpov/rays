@@ -10,6 +10,7 @@ describe 'rays init' do
   before(:each) do
     FileUtils.rm_rf(@project_root)
     FileUtils.mkdir(@project_root)
+    Rays::Core.instance.reload
   end
 
   after(:all) do

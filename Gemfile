@@ -5,6 +5,8 @@ gem 'rsolr'
 gem 'colorize'
 gem 'net-ssh'
 gem 'rsolr'
+gem 'highline'
+gem 'safe_shell'
 
 group :test do
   gem 'rspec'

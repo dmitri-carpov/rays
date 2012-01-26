@@ -63,8 +63,8 @@ module Rays
       #
       # Builder
       #
-      def build
-        @builder.build self
+      def build(skip_test = false)
+        @builder.build self, skip_test
       end
 
       #
@@ -87,7 +87,7 @@ module Rays
       def create
 
         if Dir.exist?(path)
-          task("found <!#{@type} #{@name}!>", "registered module <!#{@type} #{@name}!>", "failed to initialize <!#{@type} #{@name}!>") do
+          task("found <!#{@type} #{@name}!>", "", "failed to initialize <!#{@type} #{@name}!>") do
             create_descriptor
           end
         else

@@ -41,6 +41,16 @@ describe 'rays build' do
         end
       end
 
+      context 'remote' do
+        it 'should get remote information' do
+          pending
+        end
+
+        it 'should fail if remote information is missing' do
+          pending
+        end
+      end
+
       context 'java home' do
         it 'should get java home information' do
           pending
@@ -140,6 +150,34 @@ describe 'rays build' do
       end
 
       it 'should fail if solr information is missing' do
+        pending
+      end
+
+      context 'service' do
+        it 'should get service information' do
+          pending
+        end
+
+        it 'should fail if service information is missing' do
+          pending
+        end
+      end
+    end
+
+    describe 'global configuration validation' do
+      it 'should pass' do
+        pending
+      end
+
+      it 'should ask for maven executable' do
+        pending
+      end
+
+      it 'should ask for scp executable' do
+        pending
+      end
+
+      it 'should warn about ssh' do
         pending
       end
     end

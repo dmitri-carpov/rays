@@ -10,6 +10,7 @@ module Rays
       @debug = false
       @silent = false
       $global_config_path ||= "#{ENV['HOME']}/.rays_config"
+      @global_config_file = nil
       load_config
     end
 
@@ -50,6 +51,50 @@ module Rays
       project_root # check if it's inside a project dir
       raise RaysException.new("no environment is configured. see: config/environment.yml.") if @environments.nil?
       @environments
+    end
+
+    #
+    # Get secure copy command
+    #
+    def scp
+      save = false
+      begin
+        check_command(@scp, 'usage: scp')
+      rescue RaysException => e
+        save = true
+        $log.error(e)
+        @scp = $terminal.ask('please provide the path to scp executable: ')
+        retry
+      end
+
+      if save
+        get_global_config.properties['scp_cmd'] = @scp
+        get_global_config.write
+      end
+
+      @scp
+    end
+
+    #
+    # Get maven command
+    #
+    def mvn
+      save = false
+      begin
+        check_command(@mvn, 'Apache Maven', '-v')
+      rescue RaysException => e
+        save = true
+        $log.error(e)
+        @mvn = $terminal.ask('please provide the path to mvn executable: ')
+        retry
+      end
+
+      if save
+        get_global_config.properties['mvn_cmd'] = @mvn
+        get_global_config.write
+      end
+
+      @mvn
     end
 
     #
@@ -199,7 +244,25 @@ module Rays
             java_home = java_config['home']
             java_bin = java_config['bin']
           end
-          solr_server = Server::SolrServer.new 'solr server', host, remote, java_home, java_bin, port, url
+
+          # application service
+          application_service = nil
+          application_service_config = solr_config['service']
+          unless application_service_config.nil?
+            path = application_service_config['path']
+            path = "" if path.nil?
+            start_script = File.join(path, application_service_config['start_command'])
+            stop_script = File.join(path, application_service_config['stop_command'])
+            log_file = File.join(path, application_service_config['log_file'])
+
+            application_remote = remote
+            if code == 'local' or host == 'localhost'
+              application_remote = nil
+            end
+
+            application_service = Service::ApplicationService.new 'solr', host, port, start_script, stop_script, log_file, application_remote
+          end
+          solr_server = Server::SolrServer.new 'solr server', host, remote, java_home, java_bin, port, url, application_service
         end
 
         @environments[code] = Environment.new code, liferay_server, database_server, solr_server
@@ -235,15 +298,22 @@ module Rays
       Utils::FileUtils::YamlFile.new dot_rays_file
     end
 
+    #
+    #  GLOBAL CONFIGURATION PROCESSING
+    #
+
     def init_global_config
       @points = get_global_config.properties['points']
+      @mvn = get_global_config.properties['maven_cmd']
+      @scp = get_global_config.properties['scp_cmd']
     end
 
     def get_global_config
       check_global_config
       global_config_file = File.join($global_config_path, 'global.yml')
       raise RaysException.new("Cannot load global config file from #{global_config_file}") unless File.exists?(global_config_file)
-      Utils::FileUtils::YamlFile.new global_config_file
+      @global_config_file = Utils::FileUtils::YamlFile.new global_config_file if @global_config_file.nil?
+      @global_config_file
     end
 
     def check_global_config
@@ -257,5 +327,14 @@ module Rays
         end
       end
     end
+
+    def check_command(command, validation_answer, *args)
+      raise RaysException.new("#{command}: command not found") unless command?(command)
+      unless rays_safe_exec(command, *args).start_with?(validation_answer)
+        raise RaysException.new("#{command}: has unexpected format")
+      end
+      true
+    end
+
   end
 end

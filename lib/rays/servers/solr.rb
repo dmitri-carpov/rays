@@ -1,13 +1,15 @@
 module Rays
   module Server
-    attr_reader :solr_instnace
 
     class SolrServer < BaseServer
-      def initialize(name, host, remote, java_home, java_bin, port, url)
+      attr_reader :solr_instance
+
+      def initialize(name, host, remote, java_home, java_bin, port, url, application_service)
         super(name, host, remote, java_home, java_bin)
         @port = port
         @url = url
         @solr_instance = RSolr.connect(:url => solr_url)
+        @service = application_service
       end
 
       def port
@@ -18,6 +20,11 @@ module Rays
       def url
         raise RaysException.new(missing_environment_option('SOLR server', 'instance')) if @url.nil?
         @url
+      end
+
+      def service
+        raise RaysException.new(missing_environment_option('SOLR service', 'service')) if @service.nil?
+        @service
       end
 
       def alive?
