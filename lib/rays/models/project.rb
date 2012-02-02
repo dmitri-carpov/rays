@@ -5,7 +5,7 @@ module Rays
 
     def initialize
       project_config_file = "#{$rays_config.project_root}/config/project.yml"
-      project_config = YAML::parse(File.open project_config_file).to_ruby
+      project_config = YAML::load_file(project_config_file)
       @name = project_config['name']
       @package = project_config['package']
     end

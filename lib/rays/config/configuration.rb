@@ -161,7 +161,7 @@ module Rays
     def init_environments
       @environments = {}
       environment_config_file = "#{@project_root}/config/environment.yml"
-      environment_config = YAML::parse(File.open environment_config_file).to_ruby
+      environment_config = YAML::load_file(environment_config_file)
 
 
       environment_config.each_key do |code|
