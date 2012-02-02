@@ -99,7 +99,7 @@ module Rays
       private
 
       def get_module_from_descriptor(descriptor_file)
-        module_config = YAML::parse(File.open(descriptor_file)).to_ruby
+        module_config = YAML::load_file(descriptor_file)
         get(module_config['type'], module_config['name'])
       end
     end
