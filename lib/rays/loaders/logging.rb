@@ -20,8 +20,7 @@ $log.formatter = proc do |severity, datetime, progname, msg|
   message = color.call(message, :green) if severity.eql? 'INFO'
   message = color.call(message, :red) if severity.eql? 'ERROR'
   message = color.call(message, :yellow) if severity.eql? 'WARN'
-  message = color.call(message, :white) if severity.eql? 'DEBUG'
-  message = message if severity.eql? 'TRACE'
+  message = message if severity.eql? 'DEBUG'
   message
 end
 

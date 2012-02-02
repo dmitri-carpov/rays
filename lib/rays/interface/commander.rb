@@ -183,6 +183,14 @@ class RaysCommand < Clamp::Command
     end
   end
 
+  subcommand 'points', 'show all points' do
+    def execute
+      process_global_options
+      Rays::Controller.instance.points
+    end
+  end
+
+
   subcommand 'go', 'switch directory using point name. use rays point to crete points' do
     parameter '[name]', 'point name. if no name is specified the point will be considered as default.'
 

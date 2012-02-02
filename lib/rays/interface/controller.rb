@@ -117,6 +117,18 @@ module Rays
       end
     end
 
+    def points
+      log_block("show points") do
+        unless $rays_config.points.nil?
+          $rays_config.points.each_key do |point|
+            $log.info("#{point}: <!#{$rays_config.points[point]}!>")
+          end
+        else
+          $log.info('No points found')
+        end
+      end
+    end
+
     def remove_point(name)
       log_block("remove a point") do
         $rays_config.remove_point(name)

@@ -182,25 +182,8 @@ module Rays
             java_home = java_config['home']
             java_bin = java_config['bin']
           end
+          application_service = create_application_service_for(code, liferay_config)
 
-
-          # application service
-          application_service = nil
-          application_service_config = liferay_config['service']
-          unless application_service_config.nil?
-            path = application_service_config['path']
-            path = "" if path.nil?
-            start_script = File.join(path, application_service_config['start_command'])
-            stop_script = File.join(path, application_service_config['stop_command'])
-            log_file = File.join(path, application_service_config['log_file'])
-
-            application_remote = remote
-            if code == 'local' or host == 'localhost'
-              application_remote = nil
-            end
-
-            application_service = Service::ApplicationService.new 'liferay', host, port, start_script, stop_script, log_file, application_remote
-          end
           liferay_server = Server::LiferayServer.new 'liferay server', host, remote, java_home, java_bin, port, deploy, application_service
         end
 
@@ -244,24 +227,8 @@ module Rays
             java_home = java_config['home']
             java_bin = java_config['bin']
           end
+          application_service = create_application_service_for(code, solr_config)
 
-          # application service
-          application_service = nil
-          application_service_config = solr_config['service']
-          unless application_service_config.nil?
-            path = application_service_config['path']
-            path = "" if path.nil?
-            start_script = File.join(path, application_service_config['start_command'])
-            stop_script = File.join(path, application_service_config['stop_command'])
-            log_file = File.join(path, application_service_config['log_file'])
-
-            application_remote = remote
-            if code == 'local' or host == 'localhost'
-              application_remote = nil
-            end
-
-            application_service = Service::ApplicationService.new 'solr', host, port, start_script, stop_script, log_file, application_remote
-          end
           solr_server = Server::SolrServer.new 'solr server', host, remote, java_home, java_bin, port, url, application_service
         end
 
@@ -280,6 +247,32 @@ module Rays
     end
 
     #
+    # Create application service for.
+    #
+    def create_application_service_for(code, config)
+      application_service = nil
+      application_service_config = config['service']
+      host = config['host']
+      port = config['port']
+      remote = create_remote_for config
+      unless application_service_config.nil?
+        path = application_service_config['path']
+        path = "" if path.nil?
+        start_script = File.join(path, application_service_config['start_command'])
+        stop_script = File.join(path, application_service_config['stop_command'])
+        log_file = File.join(path, application_service_config['log_file'])
+
+        application_remote = remote
+        if code == 'local' or host == 'localhost'
+          application_remote = nil
+        end
+
+        application_service = Service::ApplicationService.new 'liferay', host, port, start_script, stop_script, log_file, application_remote
+      end
+      application_service
+    end
+
+    #
     # Create an instance of a remote service using server configuration map.
     #
     def create_remote_for(config)
@@ -291,6 +284,17 @@ module Rays
         remote = Service::Remote::SSH.new host, port, user
       end
       remote
+    end
+
+    #
+    # Create backup configuration for environment
+    #
+    def create_backup_for(config)
+      backup_config = config['backup']
+      unless backup_config.nil?
+      else
+        backup_config = Backup.default
+      end
     end
 
     def get_dot_rays_file

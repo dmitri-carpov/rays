@@ -30,6 +30,7 @@ module Rays
 
     def load_system_wide_dependencies
       require 'rays/exceptions/rays_exception'
+      require 'rays/config/backup'
       require 'rays/config/environment'
       require 'rays/config/configuration'
     end
@@ -55,6 +56,8 @@ module Rays
     end
 
     def load_services
+      require 'rays/services/sync'
+      require 'rays/services/backup_service'
       require 'rays/services/remote'
       require 'rays/services/application_service'
       require 'rays/services/scm'

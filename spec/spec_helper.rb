@@ -3,7 +3,7 @@ FileUtils.rm_rf($global_config_path) if Dir.exist?($global_config_path)
 
 require 'rays/interface/commander'
 
-$debug = false
+$debug = true
 
 #------------------------
 RSpec.configure do |c|
@@ -79,9 +79,15 @@ module Rays
       project_dir_path='/tmp'
       project_name = 'test_liferay_project'
       @project_root = File.join(project_dir_path, project_name)
+      @deploy_dir = File.join(@project_root, 'deploy')
       remove_test_project
       in_directory(project_dir_path) do
         command.run(['new', project_name])
+        FileUtils.mkdir(@deploy_dir) unless Dir.exist?(@deploy_dir)
+        file = File.join(@project_root, 'config/environment.yml')
+        config = Rays::Utils::FileUtils::YamlFile.new(file)
+        config.properties['local']['liferay']['deploy'] = @deploy_dir
+        config.write
       end
       in_directory(@project_root) do
         Rays::Core.instance.reload

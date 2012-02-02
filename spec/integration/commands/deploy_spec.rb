@@ -1,24 +1,11 @@
 require 'spec_helper'
 require 'etc'
 
-describe 'rays deploy' do
+describe 'rays deploy', :active => true do
   include Rays::SpecHelper
-
-  before(:all) do
-    @base_test_dir = '/tmp/rays_test'
-    @deploy_dir = File.join(@base_test_dir, 'deploy')
-    @content_dir = '/tmp/content_sync'
-  end
 
   before(:each) do
     recreate_test_project
-
-    in_directory(@project_root) do
-      FileUtils.rm_rf(@base_test_dir) if Dir.exist?(@base_test_dir)
-      FileUtils.mkdir_p(@deploy_dir)
-    end
-
-    #stub_remote @deploy_dir
   end
 
   describe 'no parameters' do

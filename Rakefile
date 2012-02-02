@@ -1,3 +1,5 @@
+exit 1 unless system('bundle check')
+
 require 'rspec/core/rake_task'
 require 'colorize'
 
