@@ -7,3 +7,180 @@ rays() {
 		__rays_exec.rb $@
 	fi
 }
+
+#
+# Completion
+#
+
+# Borrowed from tig, which borrowed from git
+_rayscomp () {
+	local all c s=$'\n' IFS=' '$'\t'$'\n'
+	local cur="${COMP_WORDS[COMP_CWORD]}"
+	if [ $# -gt 2 ]; then
+		cur="$3"
+	fi
+	for c in $1; do
+		case "$c$4" in
+		--*=*) all="$all$c$4$s" ;;
+		*.)    all="$all$c$4$s" ;;
+		*)     all="$all$c$4 $s" ;;
+		esac
+	done
+	IFS=$s
+	COMPREPLY=($(compgen -P "$2" -W "$all" -- "$cur"))
+	return
+}
+
+_rays_dir () {
+	local cwd="$(pwd)" dir=
+
+	while true; do
+		if [ -e "$cwd/.rays" ]; then
+			echo "$cwd"
+			return
+		else
+			cd "$cwd/.."
+		fi
+		if [ "$cwd" -eq "$(pwd)" ]; then
+			return
+		fi
+		cwd="$(pwd)"
+	done
+}
+
+_rays_module_types="portlet hook theme layout ext"
+
+_rays_module_find () {
+	local dir="$1/$2s" glob="*-$2"
+
+	case "$2" in ext) dir="$1/$2" ;; esac
+
+	if [ -d "$dir" ]; then
+		find "$dir/" -maxdepth 1 -type d -name "$glob" -printf "%f "
+	fi
+}
+
+# Completes module by type
+_rays_module () {
+	local i=$1 c=$((++i)) module_dir='' module_glob=
+	local dir="$(_rays_dir)"
+
+	while [[ $c -lt $COMP_CWORD ]] && [ -z "$module_dir" ]; do
+		case "${COMP_WORDS[c]}" in
+		portlet|hook|theme|layout|ext)
+			_rays_module_find "$dir" "${COMP_WORDS[c]}"
+			return
+			;;
+		esac
+		c=$((++c))
+	done
+
+	if [ -n "$dir" ]; then
+		echo "$_rays_module_types"
+		for i in $_rays_module_types; do
+			_rays_module_find "$dir" "$i"
+		done
+	fi
+}
+
+_rays_complete () {
+	local i c=1 command
+	local default_args="
+		--silent --debug -h --help
+	"
+
+	# Search for command
+	while [ $c -lt $COMP_CWORD ]; do
+		i="${COMP_WORDS[c]}"
+		case "$i" in
+		-*) ;;
+		*) command="$i"; break ;;
+		esac
+		c=$((++c))
+	done
+
+	# No command
+	if [ $c -eq $COMP_CWORD -a -z "$command" ]; then
+		_rayscomp "
+			$default_args
+			new
+			init
+			g
+			build
+			deploy
+			clean
+			env
+			point
+			points
+			go
+			liferay
+			solr
+		"
+		return
+	fi
+
+	case "$command" in
+		new|init|points)
+			_rayscomp "
+				$default_args
+			"
+			;;
+		g)
+			_rayscomp "
+				$_rays_module_types
+				$default_args
+			"
+			;;
+		build)
+			_rayscomp "
+				$(_rays_module "$c")
+				$default_args
+			"
+			;;
+		deploy)
+			_rayscomp "
+				$(_rays_module "$c")
+				--skip-test $default_args
+			"
+			;;
+		clean)
+			_rayscomp "
+				$(_rays_module "$c")
+				$default_args
+			"
+			;;
+		env)
+			local envs="$(rays env --list)"
+			if [ "$envs" != "Cannot find project root." ]; then
+				_rayscomp "
+					$envs --list $default_args
+				"
+			fi
+			;;
+		point)
+			_rayscomp "
+				--remove $default_args
+			"
+			;;
+		go)
+			if [ $c -eq $((COMP_CWORD - 1)) ]; then
+				_rayscomp "$(rays points | cut -f 1 -d':')"
+			fi
+			;;
+
+		liferay)
+			_rayscomp "
+				start stop status log
+				--force $default_args
+			"
+			;;
+		solr)
+			_rayscomp "
+				clean start stop log status
+				$default_args
+			"
+			;;
+	esac
+}
+
+complete -o default -o nospace -F _rays_complete rays
