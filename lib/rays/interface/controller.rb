@@ -37,8 +37,8 @@ module Rays
     # Build module(s)
     #
     def build(skip_test, modules = nil)
+      show_environment_info
       log_block("build module(s)") do
-        show_environment_info
         unless modules.nil?
           modules.each do |app_module|
             app_module.build skip_test
@@ -51,8 +51,8 @@ module Rays
     # Build and deploy module(s).
     #
     def deploy(skip_test, modules = nil)
+      show_environment_info
       log_block("build and deploy module(s)") do
-        show_environment_info
         unless modules.nil?
           modules.each do |app_module|
             app_module.build skip_test
@@ -66,8 +66,8 @@ module Rays
     # Deploy module(s). No build.
     #
     def deploy_no_build(modules=nil)
+      show_environment_info
       log_block("deploy module(s)") do
-        show_environment_info
         unless modules.nil?
           modules.each do |app_module|
             app_module.deploy
@@ -80,8 +80,8 @@ module Rays
     # Clean module(s).
     #
     def clean(modules=nil)
+      show_environment_info
       log_block("deploy module(s)") do
-        show_environment_info
         unless modules.nil?
           modules.each do |app_module|
             app_module.clean
@@ -161,8 +161,8 @@ module Rays
     # Start liferay's application server
     #
     def liferay_start(force=false)
+      show_environment_info
       task('starting server', 'start command has been sent', 'failed to start the server') do
-        show_environment_info
         service = $rays_config.environment.liferay.service
         if service.remote? and !force
           $log.warn("WARNING: you are trying to start a remote server.")
@@ -175,11 +175,28 @@ module Rays
     end
 
     #
+    # Start liferay's application server in debug mode
+    #
+    def liferay_debug(force=false)
+      show_environment_info
+      task('starting server in debug mode', 'start debug command has been sent', 'failed to start the server in debug mode') do
+        service = $rays_config.environment.liferay.service
+        if service.remote? and !force
+          $log.warn("WARNING: you are trying to debug a remote server.")
+          $log.warn("Your current environment is <!#{$rays_config.environment.name}!>.")
+          $log.warn("Use <!--force!> option if you really want to start remote liferay server.")
+          return
+        end
+        service.debug
+      end
+    end
+
+    #
     # Stop liferay's application server
     #
     def liferay_stop(force=false)
+      show_environment_info
       task('stopping server', 'stop command has been sent', 'failed to stop the server') do
-        show_environment_info
         service = $rays_config.environment.liferay.service
         if service.remote? and !force
           $log.warn("WARNING: you are trying to stop a remote server.")
@@ -195,8 +212,8 @@ module Rays
     # Show liferay server status
     #
     def liferay_status
+      show_environment_info
       log_block('get server status') do
-        show_environment_info
         service = $rays_config.environment.liferay.service
 
         if service.alive?
@@ -211,8 +228,8 @@ module Rays
     # Show liferay server logs
     #
     def liferay_log
+      show_environment_info
       task('show server log', '', 'cannot access server log file') do
-        show_environment_info
         service = $rays_config.environment.liferay.service
         service.log
       end
@@ -222,8 +239,8 @@ module Rays
     # Clean solr index
     #
     def clean_solr_index
+      show_environment_info
       log_block("clean solr index") do
-        show_environment_info
         $rays_config.environment.solr.clean_all
       end
     end
@@ -232,8 +249,8 @@ module Rays
     # Start solr application server
     #
     def solr_start(force=false)
+      show_environment_info
       task('starting server', 'start command has been sent', 'failed to start the server') do
-        show_environment_info
         service = $rays_config.environment.solr.service
         if service.remote? and !force
           $log.warn("WARNING: you are trying to start a remote server.")
@@ -249,8 +266,8 @@ module Rays
     # Stop solr application server
     #
     def solr_stop(force=false)
+      show_environment_info
       task('stopping server', 'stop command has been sent', 'failed to stop the server') do
-        show_environment_info
         service = $rays_config.environment.solr.service
         if service.remote? and !force
           $log.warn("WARNING: you are trying to stop a remote server.")
@@ -266,8 +283,8 @@ module Rays
     # Show solr server status
     #
     def solr_status
+      show_environment_info
       log_block('get server status') do
-        show_environment_info
         service = $rays_config.environment.solr.service
         if service.alive?
           $log.info("running on #{service.host}:#{service.port}")
@@ -281,8 +298,8 @@ module Rays
     # Show solr server logs
     #
     def solr_log
+      show_environment_info
       task('show server log', '', 'cannot access server log file') do
-        show_environment_info
         service = $rays_config.environment.solr.service
         service.log
       end

@@ -259,6 +259,10 @@ module Rays
         path = application_service_config['path']
         path = "" if path.nil?
         start_script = File.join(path, application_service_config['start_command'])
+        debug_script = nil
+        unless application_service_config['debug_command'].nil?
+          debug_script = File.join(path, application_service_config['debug_command'])
+        end
         stop_script = File.join(path, application_service_config['stop_command'])
         log_file = File.join(path, application_service_config['log_file'])
 
@@ -267,7 +271,7 @@ module Rays
           application_remote = nil
         end
 
-        application_service = Service::ApplicationService.new 'liferay', host, port, start_script, stop_script, log_file, application_remote
+        application_service = Service::ApplicationService.new 'liferay', host, port, start_script, debug_script, stop_script, log_file, application_remote
       end
       application_service
     end

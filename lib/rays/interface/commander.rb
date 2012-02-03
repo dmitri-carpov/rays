@@ -204,13 +204,15 @@ class RaysCommand < Clamp::Command
   # LIFERAY
   #
   subcommand 'liferay', 'manage liferay application server' do
-    parameter 'action', 'start | stop | status | log'
+    parameter 'action', 'start | debug | stop | status | log'
     option '--force', :flag, 'use it only to [start | stop] remote servers. be careful!'
 
     def execute
       process_global_options
       if action.eql? 'start'
         Rays::Controller.instance.liferay_start(force?)
+      elsif action.eql? 'debug'
+        Rays::Controller.instance.liferay_debug(force?)
       elsif action.eql? 'stop'
         Rays::Controller.instance.liferay_stop(force?)
       elsif action.eql? 'status'

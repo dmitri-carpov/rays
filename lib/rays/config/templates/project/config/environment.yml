@@ -9,6 +9,7 @@ local:
         service:
             path: /opt/liferay-portal/tomcat
             start_command: bin/startup.sh
+            debug_command: bin/catalina.sh jpda start
             stop_command: bin/shutdown.sh
             log_file: logs/catalina.out
     database:

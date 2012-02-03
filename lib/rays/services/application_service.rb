@@ -2,11 +2,12 @@ module Rays
   module Service
     class ApplicationService
 
-      def initialize(name, host, port, start_script, stop_script, log_file, remote)
+      def initialize(name, host, port, start_script, debug_script, stop_script, log_file, remote)
         @name = name
         @host = host
         @port = port
         @start_script = start_script
+        @debug_script = debug_script
         @stop_script = stop_script
         @log_file = log_file
         @remote = remote
@@ -26,6 +27,19 @@ module Rays
       def start
         unless alive?
           execute @start_script
+        else
+          raise RaysException.new('service is already running')
+        end
+      end
+
+      # Debug service
+      def debug
+        if @debug_script.nil?
+          $log.warn('debug is disabled for this server')
+          return
+        end
+        unless alive?
+          execute @debug_script
         else
           raise RaysException.new('service is already running')
         end
