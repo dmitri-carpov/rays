@@ -266,6 +266,53 @@ describe 'rays clean' do
     end
   end
 
+  #
+  # Ext
+  #
+  describe 'ext test' do
+    it 'should clean a ext from the project directory' do
+      name = 'test'
+      module_instance = generate_and_build(:ext, name).first
+      in_directory(@project_root) do
+        is_built(module_instance).should be_true
+        lambda { command.run(['clean', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_built(module_instance).should be_false
+    end
+
+    it 'should clean a ext from the ext directory' do
+      name = 'test'
+      module_instance = generate_and_build(:ext, name).first
+      in_directory(module_instance.path) do
+        Rays::Core.instance.reload
+        is_built(module_instance).should be_true
+        lambda { command.run(['clean', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_built(module_instance).should be_false
+    end
+
+    it 'should clean a ext inside ext directory' do
+      name = 'test'
+      module_instance = generate_and_build(:ext, name).first
+      in_directory(File.join(module_instance.path, 'src')) do
+        Rays::Core.instance.reload
+        is_built(module_instance).should be_true
+        lambda { command.run(['clean', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_built(module_instance).should be_false
+    end
+
+    it 'should fail from outside project directory' do
+      name = 'test'
+      module_instance = generate_and_build(:ext, name).first
+      in_directory(Rays::Utils::FileUtils.parent(@project_root)) do
+        is_built(module_instance).should be_true # must be before core reload!
+        Rays::Core.instance.reload
+        lambda { command.run(['clean', module_instance.type, module_instance.name]) }.should raise_error
+      end
+    end
+  end
+
   # TODO: test for content_sync deploy
 
   #

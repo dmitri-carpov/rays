@@ -165,6 +165,35 @@ describe 'rays build' do
     end
   end
 
+  #
+  # Ext
+  #
+  describe 'ext test' do
+    it 'should build a ext from the project directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      should_pass_build_by_name_test module_instance
+    end
+
+    it 'should build a ext from the ext directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      should_pass_build_by_name_test module_instance, module_instance.path
+    end
+
+    it 'should build a ext inside ext directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      should_pass_build_by_name_test(module_instance, File.join(module_instance.path, 'src'))
+    end
+
+    it 'should fail from outside project directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      should_fail_build_by_name_test(module_instance, Rays::Utils::FileUtils.parent(@project_root))
+    end
+  end
+
   # TODO: test for content_sync build
 
   #

@@ -77,6 +77,7 @@ module Rays
       require 'rays/models/appmodule/hook'
       require 'rays/models/appmodule/theme'
       require 'rays/models/appmodule/layout'
+      require 'rays/models/appmodule/ext'
       require 'rays/models/appmodule/content'
       require 'rays/models/project'
     end

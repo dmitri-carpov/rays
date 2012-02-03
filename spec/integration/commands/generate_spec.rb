@@ -94,6 +94,26 @@ describe 'rays g' do
   end
 
   #
+  # Ext
+  #
+  describe 'ext test' do
+    it 'should create a ext test' do
+      should_pass_generator_for module_types[:ext]
+    end
+
+    it 'should generate inside project directory' do
+      hierarchy_test_dir = File.join(@project_root, 'hierarchy_test')
+      FileUtils.mkdir(hierarchy_test_dir) unless Dir.exist?(hierarchy_test_dir)
+      should_pass_generator_for(module_types[:ext], hierarchy_test_dir)
+    end
+
+    it 'should fail outside of the project directory' do
+      outside_project_dir = Rays::Utils::FileUtils.parent(@project_root)
+      should_fail_generator_for(module_types[:ext], outside_project_dir)
+    end
+  end
+
+  #
   # Wrong usage
   #
   context 'wrong usage' do

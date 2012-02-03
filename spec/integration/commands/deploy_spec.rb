@@ -266,6 +266,52 @@ describe 'rays deploy', :active => true do
     end
   end
 
+  #
+  # Ext
+  #
+  describe 'ext test' do
+    it 'should deploy a ext from the project directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      in_directory(@project_root) do
+        lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_deployed(module_instance).should be_true
+    end
+
+    it 'should deploy a ext from the ext directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      in_directory(module_instance.path) do
+        Rays::Core.instance.reload
+        #stub_remote @deploy_dir
+        lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_deployed(module_instance).should be_true
+    end
+
+    it 'should deploy a ext inside ext directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      in_directory(File.join(module_instance.path, 'src')) do
+        Rays::Core.instance.reload
+        #stub_remote @deploy_dir
+        lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_deployed(module_instance).should be_true
+    end
+
+    it 'should fail from outside project directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      in_directory(Rays::Utils::FileUtils.parent(@project_root)) do
+        Rays::Core.instance.reload
+        lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should raise_error
+      end
+      is_deployed(module_instance).should be_false
+    end
+  end
+
   # TODO: test for content_sync deploy
 
   #

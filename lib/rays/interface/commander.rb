@@ -33,7 +33,7 @@ class RaysCommand < Clamp::Command
   # GENERATORS
   #
   subcommand 'g', 'create a liferay module' do
-    parameter 'type', 'a module type [portlet | hook | theme | layout]'
+    parameter 'type', 'a module type [portlet | hook | theme | layout | ext]'
     parameter 'name', 'a module name'
 
     def execute
@@ -46,7 +46,7 @@ class RaysCommand < Clamp::Command
   # BUILDER
   #
   subcommand 'build', 'build module(s). build all modules if under project root or a specific module if under module\'s root' do
-    parameter '[type]', 'a module type [portlet | hook | theme | layout]'
+    parameter '[type]', 'a module type [portlet | hook | theme | layout | ext]'
     parameter '[name]', 'a module name'
     option '--skip-test', :flag, 'use this option if you want to skip module tests'
 
@@ -78,7 +78,7 @@ class RaysCommand < Clamp::Command
   # DEPLOYER
   #
   subcommand 'deploy', 'deploy module(s). deploy all modules if under project root or a specific module if under module\'s root' do
-    parameter '[type]', 'a module type [portlet | hook | theme | layout]'
+    parameter '[type]', 'a module type [portlet | hook | theme | layout | ext]'
     parameter '[name]', 'a module name'
     option '--skip-test', :flag, 'use this option if you want to skip module tests'
 
@@ -110,7 +110,7 @@ class RaysCommand < Clamp::Command
   # CLEANER
   #
   subcommand 'clean', 'clean module(s). clean all modules if under project root or a specific module if under module\'s root' do
-    parameter '[type]', 'a module type [portlet | hook | theme | layout]'
+    parameter '[type]', 'a module type [portlet | hook | theme | layout | ext]'
     parameter '[name]', 'a module name'
 
     def execute
