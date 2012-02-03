@@ -28,6 +28,8 @@ describe 'rays init' do
       modules << 'themes/test_theme2'
       modules << 'layouts/test_layout'
       modules << 'layouts/test_layout2'
+      modules << 'ext/test_ext'
+      modules << 'ext/test_ext2'
 
       modules.each do |appmodule_name|
         FileUtils.mkdir_p(appmodule_name)
