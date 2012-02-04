@@ -3,9 +3,10 @@ module Rays
     class ContentModule < Module
       register :content
       directory 'utils'
-      builder Worker::Builder::Content.instance
-      deployer Worker::Deployer::Content.instance
-      cleaner Worker::Cleaner::Maven.instance
+
+      builder Worker::Manager.instance.create :builder, :content_sync
+      deployer Worker::Manager.instance.create :deployer, :content_sync
+      cleaner Worker::Manager.instance.create :cleaner, :maven
     end
   end
 end

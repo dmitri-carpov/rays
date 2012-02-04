@@ -3,7 +3,7 @@ FileUtils.rm_rf($global_config_path) if Dir.exist?($global_config_path)
 
 require 'rays/interface/commander'
 
-$debug = true
+$debug = false
 
 #------------------------
 RSpec.configure do |c|

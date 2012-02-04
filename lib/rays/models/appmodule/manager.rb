@@ -89,11 +89,11 @@ module Rays
       #
       # Create a new module or initialize if a directory exists but no .module file.
       #
-      def create(type, name)
+      def create(type, name, generator=nil)
         module_type_class = @module_types[type]
         raise RaysException.new ("Cannot find module type #{type}") if module_type_class.nil?
         module_instance = module_type_class.new name
-        module_instance.create
+        module_instance.create generator
       end
 
       private

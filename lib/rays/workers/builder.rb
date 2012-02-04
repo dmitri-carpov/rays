@@ -4,6 +4,7 @@ module Rays
 
       # Maven builder
       class Maven < BaseWorker
+        register :builder, :maven
         include Singleton
 
         def build(app_module, skip_test = false)
@@ -18,6 +19,7 @@ module Rays
 
       # Content builder
       class Content < BaseWorker
+        register :builder, :content_sync
         include Singleton
 
         def build(app_module, skip_test = false)

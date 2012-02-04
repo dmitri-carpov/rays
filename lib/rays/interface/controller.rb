@@ -25,11 +25,23 @@ module Rays
     end
 
     #
+    # Show modules
+    #
+    def show_modules
+      log_block("show modules") do
+        AppModule::Manager.instance.all.each do |appmodule|
+          $log.info("#{appmodule.type}: <!#{appmodule.name}!>")
+        end
+      end
+    end
+
+
+    #
     # Create a module
     #
-    def create_module(type, name)
+    def create_module(type, name, generator)
       log_block("create #{type} #{name}") do
-        AppModule::Manager.instance.create type, name
+        AppModule::Manager.instance.create type, name, generator
       end
     end
 

@@ -4,9 +4,10 @@ module Rays
       register :portlet
       directory 'portlets'
       archetype 'liferay-portlet-archetype'
-      builder Worker::Builder::Maven.instance
-      deployer Worker::Deployer::Maven.instance
-      cleaner Worker::Cleaner::Maven.instance
+      generator Worker::Manager.instance.create :generator, :maven
+      builder Worker::Manager.instance.create :builder, :maven
+      deployer Worker::Manager.instance.create :deployer, :maven
+      cleaner Worker::Manager.instance.create :cleaner, :maven
     end
   end
 end

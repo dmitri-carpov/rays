@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'etc'
 
-describe 'rays deploy', :active => true do
+describe 'rays deploy' do
   include Rays::SpecHelper
 
   before(:each) do

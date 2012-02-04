@@ -99,7 +99,7 @@ describe 'rays g' do
   context 'wrong usage' do
     it 'should ask for a module type' do
       in_directory(@project_root) do
-        lambda { command.run(%w{g}) }.should raise_error Clamp::UsageError
+        lambda { command.run(%w{g}) }.should raise_error Clamp::HelpWanted
       end
     end
 

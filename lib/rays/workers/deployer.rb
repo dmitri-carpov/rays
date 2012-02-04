@@ -6,6 +6,8 @@ module Rays
 
       # Maven deployer
       class Maven < BaseWorker
+        register :deployer, :maven
+
         include Singleton
 
         def deploy(app_module)
@@ -24,6 +26,8 @@ module Rays
 
       # Content deployer
       class Content < BaseWorker
+        register :deployer, :content_sync
+
         include Singleton
 
         def deploy(app_module)

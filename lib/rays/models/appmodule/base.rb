@@ -7,7 +7,7 @@ module Rays
       #
       class << self
 
-        attr_reader :type, :base_directory, :archetype_name, :build_worker, :deploy_worker, :clean_worker
+        attr_reader :type, :base_directory, :archetype_name, :generate_worker, :build_worker, :deploy_worker, :clean_worker
 
         # Class initializers
 
@@ -22,6 +22,10 @@ module Rays
 
         def archetype(archetype)
           @archetype_name = archetype
+        end
+
+        def generator(generate_worker)
+          @generate_worker = generate_worker
         end
 
         def builder(build_worker)
@@ -47,7 +51,7 @@ module Rays
       #
       # INSTANCE
       #
-      attr_reader :type, :name
+      attr_reader :type, :name, :archetype_name
 
       def initialize(name)
         @name = name
@@ -55,9 +59,23 @@ module Rays
         # transfer class properties to instance properties
         @type = self.class.type
         @archetype_name = self.class.archetype_name
+        @generator = self.class.generate_worker
         @builder = self.class.build_worker
         @deployer = self.class.deploy_worker
         @cleaner = self.class.clean_worker
+
+        descriptor = load_descriptor
+        unless descriptor.nil?
+          unless descriptor['builder'].nil?
+            @builder = Worker::Manager.instnace.create :builder, descriptor['builder'].to_sym
+          end
+          unless descriptor['deployer'].nil?
+            @deployer = Worker::Manager.instnace.create :deployer, descriptor['deployer'].to_sym
+          end
+          unless descriptor['cleaner'].nil?
+            @cleaner = Worker::Manager.instnace.create :cleaner, descriptor['cleaner'].to_sym
+          end
+        end
       end
 
       #
@@ -84,26 +102,27 @@ module Rays
       #
       # Create a new module or initialize if a directory exists but no .module file.
       #
-      def create
+      def create(generator_name=nil)
 
         if Dir.exist?(path)
           task("found <!#{@type} #{@name}!>", "", "failed to initialize <!#{@type} #{@name}!>") do
             create_descriptor
           end
         else
-          raise RaysException.new("Don't know how to create #{@type}/#{@name}.") if @archetype_name.nil?
+
+          generator = nil
+          begin
+            generator = Worker::Manager.instance.create(:generator, generator_name.to_sym) unless generator_name.nil?
+          rescue RaysException
+            # do nothing
+          end
+          generator ||= @generator
 
           FileUtils.mkdir_p(self.class.base_path) unless Dir.exist?(self.class.base_path)
+
           in_directory(self.class.base_path) do
             task("creating <!#{@type} #{@name}!>", "done", "failed") do
-              create_cmd = "mvn archetype:generate" <<
-                  " -DarchetypeGroupId=com.liferay.maven.archetypes" <<
-                  " -DarchetypeArtifactId=#{@archetype_name}" <<
-                  " -DgroupId=#{Project.instance.package}.#{@type}" <<
-                  " -DartifactId=#{@name}" <<
-                  " -Dversion=1.0" <<
-                  " -Dpackaging=war -B"
-              rays_exec(create_cmd)
+              generator.create self
               create_descriptor
             end
           end
@@ -115,8 +134,11 @@ module Rays
       end
 
       protected
+      def descriptor_file_path
+        File.join(path, '.module')
+      end
+
       def create_descriptor
-        descriptor_file_path = File.join(path, '.module')
         if File.exists?(descriptor_file_path)
           raise RaysException.new("<!#{@type} #{name}!> has already been initialized.")
         end
@@ -126,6 +148,14 @@ module Rays
         File.open(descriptor_file_path, 'w') do |f|
           f.write(content.to_yaml)
         end
+      end
+
+      def load_descriptor
+        descriptor = nil
+        if File.exists?(descriptor_file_path)
+          descriptor = Utils::FileUtils::YamlFile.new(descriptor_file_path).properties
+        end
+        descriptor
       end
     end
   end

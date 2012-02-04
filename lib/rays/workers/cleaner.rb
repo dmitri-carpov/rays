@@ -4,6 +4,8 @@ module Rays
 
       # Maven cleaner
       class Maven < BaseWorker
+        register :cleaner, :maven
+
         include Singleton
 
         def clean(app_module)

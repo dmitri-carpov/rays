@@ -29,16 +29,61 @@ class RaysCommand < Clamp::Command
     end
   end
 
+
+  #
+  # SHOW ALL MODULES
+  #
+  subcommand 'modules', 'show all modules' do
+    def execute
+      process_global_options
+      Rays::Controller.instance.show_modules
+    end
+  end
+
+
   #
   # GENERATORS
   #
   subcommand 'g', 'create a liferay module' do
-    parameter 'type', 'a module type [portlet | hook | theme | layout]'
-    parameter 'name', 'a module name'
 
-    def execute
-      process_global_options
-      Rays::Controller.instance.create_module type, name
+    subcommand 'portlet', 'create a portlet' do
+      parameter 'name', 'a module name'
+      option '--generator', 'GENERATOR', 'Generator name, maven by default'
+
+      def execute
+        process_global_options
+        Rays::Controller.instance.create_module 'portlet', name, generator
+      end
+    end
+
+    subcommand 'hook', 'create a hook' do
+      parameter 'name', 'a module name'
+      option '--generator', 'GENERATOR', 'Generator name, maven by default'
+
+      def execute
+        process_global_options
+        Rays::Controller.instance.create_module 'hook', name, generator
+      end
+    end
+
+    subcommand 'theme', 'create a theme' do
+      parameter 'name', 'a module name'
+      option '--generator', 'GENERATOR', 'Generator name, maven by default'
+
+      def execute
+        process_global_options
+        Rays::Controller.instance.create_module 'theme', name, generator
+      end
+    end
+
+    subcommand 'layout', 'create a layout' do
+      parameter 'name', 'a module name'
+      option '--generator', 'GENERATOR', 'Generator name, maven by default'
+
+      def execute
+        process_global_options
+        Rays::Controller.instance.create_module 'layout', name, generator
+      end
     end
   end
 

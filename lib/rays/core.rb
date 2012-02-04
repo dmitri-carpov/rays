@@ -65,6 +65,7 @@ module Rays
 
     def load_workers
       require 'rays/workers/base'
+      require 'rays/workers/generator'
       require 'rays/workers/builder'
       require 'rays/workers/deployer'
       require 'rays/workers/cleaner'
