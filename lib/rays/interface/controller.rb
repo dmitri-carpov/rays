@@ -169,6 +169,23 @@ module Rays
       end
     end
 
+    def backup
+      log_block("backup") do
+        package = Rays::Service::Backup.new.backup
+        $log.info("Backup created: <!#{package}!>")
+      end
+    end
+
+    def sync
+      if 'local'.eql?($rays_config.environment.name)
+        $log.warn("Select not local environment to import to local.")
+        return
+      end
+      log_block("synchronize environments") do
+        Rays::Service::Sync.new.sync
+      end
+    end
+
     #
     # Start liferay's application server
     #

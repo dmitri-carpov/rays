@@ -28,6 +28,9 @@ local:
             start_command: bin/startup.sh
             stop_command: bin/shutdown.sh
             log_file: logs/catalina.out
+    backup:
+        directory: /tmp/backup
+        stop: false
 test:
     liferay:
         host: localhost

@@ -2,10 +2,11 @@ module Rays
   module Server
     class LiferayServer < BaseServer
 
-      def initialize(name, host, remote, java_home, java_bin, port, deploy_directory, application_service)
+      def initialize(name, host, remote, java_home, java_bin, port, deploy_directory, data_directory, application_service)
         super(name, host, remote, java_home, java_bin)
         @port = port
         @deploy_directory = deploy_directory
+        @data_directory = data_directory
         @service = application_service
         default
       end
@@ -18,6 +19,11 @@ module Rays
       def deploy_directory
         raise RaysException.new(missing_environment_option('Liferay', 'deploy directory')) if @deploy_directory.nil?
         @deploy_directory
+      end
+
+      def data_directory
+        raise RaysException.new(missing_environment_option('Liferay', 'data directory')) if @data_directory.nil?
+        @data_directory
       end
 
       def service

@@ -9,6 +9,11 @@ module Rays
         @username = username
         @password = password
         @type = type
+
+        @instance = nil
+        if 'mysql'.eql?(@type)
+            @instance = Rays::Database::MySQL.new @host, @port, @username, @password
+        end
       end
 
       def port
@@ -34,6 +39,11 @@ module Rays
       def type
         raise RaysException.new(missing_environment_option('Database server', 'type')) if @type.nil?
         @type
+      end
+
+      def instance
+        raise RaysException.new("Unknown database type #{@type}") if @instance.nil?
+        @instance
       end
     end
   end

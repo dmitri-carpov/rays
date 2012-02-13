@@ -246,6 +246,27 @@ class RaysCommand < Clamp::Command
   end
 
   #
+  # BACKUP
+  #
+  subcommand 'backup', 'backup current environment' do
+    def execute
+      process_global_options
+      Rays::Controller.instance.backup
+    end
+  end
+
+  #
+  # SYNC
+  #
+  subcommand 'sync', 'synchronize local environment with the current one' do
+    def execute
+      process_global_options
+      Rays::Controller.instance.sync
+    end
+  end
+
+
+  #
   # LIFERAY
   #
   subcommand 'liferay', 'manage liferay application server' do

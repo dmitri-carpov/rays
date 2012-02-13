@@ -61,6 +61,7 @@ module Rays
       require 'rays/services/remote'
       require 'rays/services/application_service'
       require 'rays/services/scm'
+      require 'rays/services/database'
     end
 
     def load_workers

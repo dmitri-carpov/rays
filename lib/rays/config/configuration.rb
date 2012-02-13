@@ -39,6 +39,7 @@ module Rays
         yaml_file = get_dot_rays_file
         yaml_file.properties['environment'] = environment_name
         yaml_file.write
+        Core.instance.reload
       else
         raise RaysException.new("cannot find environment <!#{environment_name}!>")
       end
@@ -174,6 +175,7 @@ module Rays
           host = liferay_config['host']
           port = liferay_config['port']
           deploy = liferay_config['deploy']
+          data_directory = liferay_config['data']
           remote = create_remote_for liferay_config
           java_home = nil
           java_bin = nil
@@ -184,7 +186,7 @@ module Rays
           end
           application_service = create_application_service_for(code, liferay_config)
 
-          liferay_server = Server::LiferayServer.new 'liferay server', host, remote, java_home, java_bin, port, deploy, application_service
+          liferay_server = Server::LiferayServer.new 'liferay server', host, remote, java_home, java_bin, port, deploy, data_directory, application_service
         end
 
         #
@@ -232,7 +234,21 @@ module Rays
           solr_server = Server::SolrServer.new 'solr server', host, remote, java_home, java_bin, port, url, application_service
         end
 
-        @environments[code] = Environment.new code, liferay_server, database_server, solr_server
+        #
+        # Backup
+        #
+        backup_config = nil
+        backup_config_map = environment_config[code]['backup']
+        unless backup_config_map.nil?
+          directory = backup_config_map['directory']
+          number_of_backups = backup_config_map['number_of_backups']
+          stop = backup_config_map['stop']
+          backup_config = Backup.new(directory, number_of_backups, stop)
+        else
+          backup_config = Backup.new(nil, nil, nil)
+        end
+
+        @environments[code] = Environment.new code, liferay_server, database_server, solr_server, backup_config
       end
 
 
@@ -288,17 +304,6 @@ module Rays
         remote = Service::Remote::SSH.new host, port, user
       end
       remote
-    end
-
-    #
-    # Create backup configuration for environment
-    #
-    def create_backup_for(config)
-      backup_config = config['backup']
-      unless backup_config.nil?
-      else
-        backup_config = Backup.default
-      end
     end
 
     def get_dot_rays_file

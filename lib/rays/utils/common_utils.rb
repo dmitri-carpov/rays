@@ -27,7 +27,7 @@ end
 #
 def task(start_message, done_message, failed_message)
   begin
-    $log.info(start_message)
+    $log.info("<!#{start_message}!>")
     yield
     $log.info(done_message)
   rescue => e
@@ -84,6 +84,33 @@ def in_directory(directory)
     yield
   ensure
     Dir.chdir(original_directory)
+  end
+end
+
+#
+# Execute a given command while liferay service is stopped.
+#
+def service_safe(stop = true)
+  environment = $rays_config.environment
+  if stop and environment.liferay.service.alive?
+    environment.liferay.service.stop
+    yield
+    environment.liferay.service.start
+  else
+    yield
+  end
+end
+
+#
+# In local environment
+#
+def in_local_environment
+  original_environment_name = $rays_config.environment.name
+  begin
+    $rays_config.environment = 'local'
+    yield
+  ensure
+    $rays_config.environment = original_environment_name
   end
 end
 
