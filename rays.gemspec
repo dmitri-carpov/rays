@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.post_install_message = lambda {
     require('./rubygems_hooks.rb')
     require('colorize')
-    return "registered rays function in your .bashrc\nplease make sure you reloaded your bash (execute . ~/.bashrc)".green
+    return "registered rays function in your bash profile\nplease reopen your shell window".green
   }.call # awful way to do it, until a proper way to set gem hooks is found
 end
 
