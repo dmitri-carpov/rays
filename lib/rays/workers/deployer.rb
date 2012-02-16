@@ -13,7 +13,7 @@ module Rays
         def deploy(app_module)
           execute('deploy', app_module) do
             env = $rays_config.environment
-            Rays::Utils::FileUtils.find_down("./target/", '.*\\.war$').each do |file_to_deploy|
+            Rays::Utils::FileUtils.find_down("./", '.*\\.war$').each do |file_to_deploy|
               if env.liferay.remote?
                 env.liferay.remote.copy_to(file_to_deploy, env.liferay.deploy_directory)
               else
