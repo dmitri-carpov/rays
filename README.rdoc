@@ -1,5 +1,48 @@
 Rays is a command line tool which makes Liferay development easier and more fun.
 Inspired by Ruby on Rails.
+Rays should work on any Unix-like system.
 
-TO BE CONTINUED ...
+Usage: https://github.com/dmitri-carpov/rays/wiki/Usage
 
+= INSTALLATION
+
+Make sure you have development tools installed (gcc -v).
+
+Ubuntu:  $ sudo apt-get install build-essential
+MacOS X: install XCode
+
+1. Install rvm (http://beginrescueend.com/)
+ $ bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
+
+Follow rvm instructions or just reopen shell window.
+
+2. Install rvm packages
+ $ rvm pkg install zlib
+ $ rvm pkg install openssl
+ $ rvm pkg install readline # optional
+
+3. Install ruby 1.9.3 or higher
+ $ rvm install 1.9.3
+
+ NOTE: for XCode 4.2.x execute $ rvm install 1.9.3 --with-gcc=clang
+
+Make version 1.9.3 default
+ $ rvm --default use 1.9.3
+
+4. Install maven (http://maven.apache.org)
+- Download a bin from (http://maven.apache.org/download.html)
+- extract package somewhere (/usr/local or /opt for example)
+ $ tar -zxf apache-maven-x.x.x-bin.tar.gz
+- Create M2_HOME environment variable and add mvn to PATH
+add to ~/.bashrc or ~/.bash_profile
+ export M2_HOME=<path-to-maven>
+ export PATH=$M2_HOME/bin:$PATH
+reopen shell window and type 'mvn -v', maven information block should appear
+
+5. Install rays
+- Download rays gem from (https://github.com/dmitri-carpov/rays/blob/master/rays-0.1.0.gem)
+- Install rays gem file
+ $ gem install rays-0.1.0.gem
+
+6. Use rays
+ $ rays --help
