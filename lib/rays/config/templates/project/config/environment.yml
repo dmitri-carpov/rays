@@ -3,6 +3,7 @@ local:
         host: localhost
         port: 8080
         deploy: /opt/liferay-portal/deploy
+        data: /opt/liferay-portal/data
         java:
             home: /usr/lib/jvm/java-6-sun
             bin: /usr/bin/java
@@ -33,28 +34,35 @@ local:
         stop: false
 test:
     liferay:
-        host: localhost
+        host: 127.0.0.1
         port: 8080
-        deploy: /opt/liferay-portal-test/deploy
-        ssh:
-            port: 22
-            user: liferay
+        deploy: /opt/liferay-portal/deploy
+        data: /opt/liferay-portal/data
         java:
             home: /usr/lib/jvm/java-6-sun
             bin: /usr/bin/java
-        appserver:
-            path: /opt/liferay-portal-test/tomcat
+        service:
+            path: /opt/liferay-portal/tomcat
             start_command: bin/startup.sh
+            debug_command: bin/catalina.sh jpda start
             stop_command: bin/shutdown.sh
             log_file: logs/catalina.out
     database:
         host: localhost
         port: 3306
         type: mysql
-        name: liferay_test
+        name: liferay
         username: root
         password: ""
     solr:
         host: localhost
         port: 8085
-        url: solr-test
+        url: solr
+        service:
+            path: /opt/solr-server/apache-tomcat
+            start_command: bin/startup.sh
+            stop_command: bin/shutdown.sh
+            log_file: logs/catalina.out
+    backup:
+        directory: /tmp/backup
+        stop: false
