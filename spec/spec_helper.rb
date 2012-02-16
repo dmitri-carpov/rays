@@ -28,9 +28,11 @@ module Rays
 
         @module_types = {}
         @module_types[:portlet] = Rays::AppModule::PortletModule
+        @module_types[:servicebuilder] = Rays::AppModule::ServiceBuilderModule
         @module_types[:hook] = Rays::AppModule::HookModule
         @module_types[:theme] = Rays::AppModule::ThemeModule
         @module_types[:layout] = Rays::AppModule::LayoutModule
+        @module_types[:ext] = Rays::AppModule::ExtModule
 
         @command = RaysCommand.new('rays')
       end
