@@ -6,6 +6,7 @@ gem 'colorize'
 gem 'net-ssh'
 gem 'highline'
 gem 'safe_shell'
+gem 'nokogiri'
 
 group :test do
   gem 'rspec'
