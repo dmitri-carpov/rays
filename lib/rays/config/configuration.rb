@@ -343,7 +343,7 @@ module Rays
 
     def check_command(command, validation_answer, *args)
       raise RaysException.new("#{command}: command not found") unless command?(command)
-      unless rays_safe_exec(command, *args).start_with?(validation_answer)
+      unless rays_safe_exec(command, *args).include?(validation_answer)
         raise RaysException.new("#{command}: has unexpected format")
       end
       true
