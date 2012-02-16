@@ -1,6 +1,7 @@
 registered = false
 
 bashrc = "#{ENV['HOME']}/.bashrc"
+bashrc = "#{ENV['HOME']}/.bash_profile" unless File.exists?(bashrc)
 
 begin
   registered = !open(bashrc).grep(/rays/).empty?
