@@ -1,12 +1,13 @@
 module Rays
   class Project
 
-    attr_reader :name, :package
+    attr_reader :name, :package, :liferay
 
     def initialize
       project_config_file = "#{$rays_config.project_root}/config/project.yml"
       project_config = YAML::load_file(project_config_file)
       @name = project_config['name']
+      @liferay = project_config['liferay']
       @package = project_config['package']
     end
 
@@ -29,10 +30,7 @@ module Rays
         end
 
         copy_template_to project_root
-
-        in_directory(project_root) do
-          Rays::Core.instance.reload
-        end
+        init_project(project_root)
       end
 
       #
@@ -56,7 +54,7 @@ module Rays
         $log.info("init project #{project_name}")
         copy_template_to project_root
 
-        Rays::Core.instance.reload
+        init_project(project_name)
 
         module_types = AppModule::Manager.instance.module_types
         module_types.values.each do |module_class|
@@ -79,6 +77,15 @@ module Rays
           next if file_base_path.empty?
           $log.info("create <!#{file_base_path}!>")
           FileUtils.cp_r(file, File.join(project_root, file_base_path))
+        end
+      end
+
+      def init_project(project_root)
+        in_directory(project_root) do
+          project_file = Utils::FileUtils::YamlFile.new('./config/project.yml')
+          project_file.properties['name'] = File.basename(project_root)
+          project_file.write
+          Rays::Core.instance.reload
         end
       end
     end
