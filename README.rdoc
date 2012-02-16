@@ -1,8 +1,17 @@
-Rays is a command line tool which makes Liferay development easier and more fun.
-Inspired by Ruby on Rails.
+Rays is a command line tool for Liferay development.
+It replaces long lines of maven archetype generators with short rails-like commands.
+Also it allows to manage different environments (development, staging ...)
+
+Some usage examples:
+
+ $ rays new <project name>
+ $ rays g portlet <portlet name>
+ $ rays deploy
+ $ rays liferay start
+
 Rays should work on any Unix-like system.
 
-Usage: https://github.com/dmitri-carpov/rays/wiki/Usage
+Detailed user guide: https://github.com/dmitri-carpov/rays/wiki/Usage
 
 = INSTALLATION
 
