@@ -126,6 +126,101 @@ describe 'rays clean' do
   end
 
   #
+  # Service builder
+  #
+  describe 'servicebuilder test' do
+    it 'should clean from the project directory' do
+      name = 'test'
+      module_instance = generate_and_build(:servicebuilder, name).first
+      in_directory(@project_root) do
+        is_built(module_instance).should be_true
+        lambda { command.run(['clean', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_built(module_instance).should be_false
+    end
+
+    it 'should clean from the module directory' do
+      name = 'test'
+      module_instance = generate_and_build(:servicebuilder, name).first
+      in_directory(module_instance.path) do
+        Rays::Core.instance.reload
+        is_built(module_instance).should be_true
+        lambda { command.run(['clean', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_built(module_instance).should be_false
+    end
+
+    it 'should clean inside module directory' do
+      name = 'test'
+      module_instance = generate_and_build(:servicebuilder, name).first
+      in_directory(File.join(module_instance.path, "#{name}-portlet-service")) do
+        Rays::Core.instance.reload
+        is_built(module_instance).should be_true
+        lambda { command.run(['clean', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_built(module_instance).should be_false
+    end
+
+    it 'should fail from outside project directory' do
+      name = 'test'
+      module_instance = generate_and_build(:servicebuilder, name).first
+      in_directory(Rays::Utils::FileUtils.parent(@project_root)) do
+        is_built(module_instance).should be_true # must be before core reload!
+        Rays::Core.instance.reload
+        lambda { command.run(['clean', module_instance.type, module_instance.name]) }.should raise_error
+      end
+    end
+  end
+
+  #
+  # Ext plugin
+  #
+  describe 'ext test' do
+    it 'should clean from the project directory' do
+      name = 'test'
+      module_instance = generate_and_build(:ext, name).first
+      in_directory(@project_root) do
+        is_built(module_instance).should be_true
+        lambda { command.run(['clean', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_built(module_instance).should be_false
+    end
+
+    it 'should clean from the module directory' do
+      name = 'test'
+      module_instance = generate_and_build(:ext, name).first
+      in_directory(module_instance.path) do
+        Rays::Core.instance.reload
+        is_built(module_instance).should be_true
+        lambda { command.run(['clean', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_built(module_instance).should be_false
+    end
+
+    it 'should clean inside the module directory' do
+      name = 'test'
+      module_instance = generate_and_build(:ext, name).first
+      in_directory(File.join(module_instance.path, "#{name}-ext")) do
+        Rays::Core.instance.reload
+        is_built(module_instance).should be_true
+        lambda { command.run(['clean', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_built(module_instance).should be_false
+    end
+
+    it 'should fail from outside project directory' do
+      name = 'test'
+      module_instance = generate_and_build(:ext, name).first
+      in_directory(Rays::Utils::FileUtils.parent(@project_root)) do
+        is_built(module_instance).should be_true # must be before core reload!
+        Rays::Core.instance.reload
+        lambda { command.run(['clean', module_instance.type, module_instance.name]) }.should raise_error
+      end
+    end
+  end
+
+
+  #
   # Hook
   #
   describe 'hook test' do
@@ -273,7 +368,11 @@ describe 'rays clean' do
   #
 
   def is_built(module_instance)
-    file = File.join(module_instance.path, "target/#{module_instance.name}-1.0.war")
-    File.exist?(file)
+    unless module_instance.type.to_sym == :servicebuilder or module_instance.type.to_sym == :ext
+      file = File.join(module_instance.path, "target/#{module_instance.name}-1.0-SNAPSHOT.war")
+      File.exist?(file)
+    else
+      !Rays::Utils::FileUtils.find_down(module_instance.path, /.*\.war$/).empty?
+    end
   end
 end

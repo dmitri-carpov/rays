@@ -129,6 +129,106 @@ describe 'rays deploy' do
   end
 
   #
+  # Service builder
+  #
+  describe 'servicebuilder test' do
+    it 'should deploy from the project directory' do
+      name = 'test'
+      module_instance = generate(:servicebuilder, name).first
+      in_directory(@project_root) do
+        lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_deployed(module_instance).should be_true
+    end
+
+    it 'should deploy from module directory' do
+      name = 'test'
+      module_instance = generate(:servicebuilder, name).first
+      in_directory(module_instance.path) do
+        Rays::Core.instance.reload
+        #stub_remote @deploy_dir
+        lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_deployed(module_instance).should be_true
+    end
+
+    it 'should deploy inside module directory' do
+      name = 'test'
+      module_instance = generate(:servicebuilder, name).first
+      in_directory(File.join(module_instance.path, "#{name}-portlet-service")) do
+        Rays::Core.instance.reload
+        #stub_remote @deploy_dir
+        lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_deployed(module_instance).should be_true
+    end
+
+    it 'should fail from outside project directory' do
+      name = 'test'
+      module_instance = generate(:servicebuilder, name).first
+      in_directory(Rays::Utils::FileUtils.parent(@project_root)) do
+        Rays::Core.instance.reload
+        lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should raise_error
+      end
+      is_deployed(module_instance).should be_false
+    end
+
+    it 'should deploy to remote' do
+      pending
+    end
+  end
+
+  #
+  # Ext plugin
+  #
+  describe 'ext test' do
+    it 'should deploy from the project directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      in_directory(@project_root) do
+        lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_deployed(module_instance).should be_true
+    end
+
+    it 'should deploy from module directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      in_directory(module_instance.path) do
+        Rays::Core.instance.reload
+        #stub_remote @deploy_dir
+        lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_deployed(module_instance).should be_true
+    end
+
+    it 'should deploy inside module directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      in_directory(File.join(module_instance.path, "#{name}-ext")) do
+        Rays::Core.instance.reload
+        #stub_remote @deploy_dir
+        lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
+      end
+      is_deployed(module_instance).should be_true
+    end
+
+    it 'should fail from outside project directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      in_directory(Rays::Utils::FileUtils.parent(@project_root)) do
+        Rays::Core.instance.reload
+        lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should raise_error
+      end
+      is_deployed(module_instance).should be_false
+    end
+
+    it 'should deploy to remote' do
+      pending
+    end
+  end
+
+  #
   # Hook
   #
   describe 'hook test' do
@@ -273,7 +373,19 @@ describe 'rays deploy' do
   #
 
   def is_deployed(module_instance)
-    file = File.join(@deploy_dir, "#{module_instance.name}-1.0.war")
-    File.exist?(file)
+    unless module_instance.type.to_sym == :servicebuilder or module_instance.type.to_sym == :ext
+      file = File.join(@deploy_dir, "#{module_instance.name}-1.0-SNAPSHOT.war")
+      File.exist?(file)
+    else
+      if module_instance.type.to_sym == :servicebuilder
+        file = File.join(@deploy_dir, "#{module_instance.name}-portlet-1.0-SNAPSHOT.war")
+        File.exist?(file)
+      else
+        file1 = File.join(@deploy_dir, "#{module_instance.name}-ext-1.0-SNAPSHOT.war")
+        file2 = File.join(@deploy_dir, "#{module_instance.name}-ext-web-1.0-SNAPSHOT.war")
+        File.exist?(file1) and File.exist?(file2)
+      end
+
+    end
   end
 end

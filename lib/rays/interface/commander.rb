@@ -56,6 +56,26 @@ class RaysCommand < Clamp::Command
       end
     end
 
+    subcommand 'servicebuilder', 'create a service builder' do
+      parameter 'name', 'a module name'
+      option '--generator', 'GENERATOR', 'Generator name, maven by default'
+
+      def execute
+        process_global_options
+        Rays::Controller.instance.create_module 'servicebuilder', name, generator
+      end
+    end
+
+    subcommand 'ext', 'create an ext plugin' do
+      parameter 'name', 'a module name'
+      option '--generator', 'GENERATOR', 'Generator name, maven by default'
+
+      def execute
+        process_global_options
+        Rays::Controller.instance.create_module 'ext', name, generator
+      end
+    end
+
     subcommand 'hook', 'create a hook' do
       parameter 'name', 'a module name'
       option '--generator', 'GENERATOR', 'Generator name, maven by default'

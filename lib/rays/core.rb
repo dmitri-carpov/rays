@@ -76,6 +76,8 @@ module Rays
       require 'rays/models/appmodule/manager'
       require 'rays/models/appmodule/base'
       require 'rays/models/appmodule/portlet'
+      require 'rays/models/appmodule/servicebuilder'
+      require 'rays/models/appmodule/ext'
       require 'rays/models/appmodule/hook'
       require 'rays/models/appmodule/theme'
       require 'rays/models/appmodule/layout'
@@ -95,6 +97,7 @@ module Rays
       require 'timeout'
       require 'highline'
       require 'safe_shell'
+      require 'nokogiri'
     end
   end
 end

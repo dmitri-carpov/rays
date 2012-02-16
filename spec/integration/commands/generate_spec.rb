@@ -28,6 +28,46 @@ describe 'rays g' do
   end
 
   #
+  # Service builder
+  #
+  describe 'servicebuilder test' do
+    it 'should create a servicebuilder test' do
+      should_pass_generator_for module_types[:servicebuilder]
+    end
+
+    it 'should generate inside project directory' do
+      hierarchy_test_dir = File.join(@project_root, 'hierarchy_test')
+      FileUtils.mkdir(hierarchy_test_dir) unless Dir.exist?(hierarchy_test_dir)
+      should_pass_generator_for(module_types[:servicebuilder], hierarchy_test_dir)
+    end
+
+    it 'should fail outside of the project directory' do
+      outside_project_dir = Rays::Utils::FileUtils.parent(@project_root)
+      should_fail_generator_for(module_types[:servicebuilder], outside_project_dir)
+    end
+  end
+
+  #
+  # Ext plugin
+  #
+  describe 'ext test' do
+    it 'should create an ext plugin test' do
+      should_pass_generator_for module_types[:ext]
+    end
+
+    it 'should generate inside project directory' do
+      hierarchy_test_dir = File.join(@project_root, 'hierarchy_test')
+      FileUtils.mkdir(hierarchy_test_dir) unless Dir.exist?(hierarchy_test_dir)
+      should_pass_generator_for(module_types[:ext], hierarchy_test_dir)
+    end
+
+    it 'should fail outside of the project directory' do
+      outside_project_dir = Rays::Utils::FileUtils.parent(@project_root)
+      should_fail_generator_for(module_types[:ext], outside_project_dir)
+    end
+  end
+
+  #
   # Hook
   #
   describe 'hook test' do

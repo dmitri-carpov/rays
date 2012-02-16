@@ -79,6 +79,64 @@ describe 'rays build' do
   end
 
   #
+  # Service builder
+  #
+  describe 'servicebuilder test' do
+    it 'should build from the project directory' do
+      name = 'test'
+      module_instance = generate(:servicebuilder, name).first
+      should_pass_build_by_name_test module_instance
+    end
+
+    it 'should build from the module directory' do
+      name = 'test'
+      module_instance = generate(:servicebuilder, name).first
+      should_pass_build_by_name_test module_instance, module_instance.path
+    end
+
+    it 'should build inside module directory' do
+      name = 'test'
+      module_instance = generate(:servicebuilder, name).first
+      should_pass_build_by_name_test(module_instance, File.join(module_instance.path, 'test-portlet-service'))
+    end
+
+    it 'should fail from outside project directory' do
+      name = 'test'
+      module_instance = generate(:servicebuilder, name).first
+      should_fail_build_by_name_test(module_instance, Rays::Utils::FileUtils.parent(@project_root))
+    end
+  end
+
+  #
+  # Ext environment
+  #
+  describe 'ext test' do
+    it 'should build from the project directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      should_pass_build_by_name_test module_instance
+    end
+
+    it 'should build from the module directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      should_pass_build_by_name_test module_instance, module_instance.path
+    end
+
+    it 'should build inside the module directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      should_pass_build_by_name_test(module_instance, File.join(module_instance.path, 'test-ext'))
+    end
+
+    it 'should fail from outside project directory' do
+      name = 'test'
+      module_instance = generate(:ext, name).first
+      should_fail_build_by_name_test(module_instance, Rays::Utils::FileUtils.parent(@project_root))
+    end
+  end
+
+  #
   # Hook
   #
   describe 'hook test' do
@@ -131,7 +189,7 @@ describe 'rays build' do
 
     it 'should fail from outside project directory' do
       name = 'test'
-      module_instance = generate(:theme, name) .first
+      module_instance = generate(:theme, name).first
       should_fail_build_by_name_test(module_instance, Rays::Utils::FileUtils.parent(@project_root))
     end
   end
@@ -179,8 +237,11 @@ describe 'rays build' do
       Rays::Core.instance.reload
       lambda { command.run(['build', module_instance.type, module_instance.name]) }.should_not raise_error
     end
-    Dir.exists?(File.join(module_path, 'target')).should be_true
-    File.exist?(File.join(module_path, "target/#{module_instance.name}-1.0.war")).should be_true
+
+    unless module_instance.type.to_sym == :servicebuilder or module_instance.type.to_sym == :ext
+      Dir.exists?(File.join(module_path, 'target')).should be_true
+      File.exist?(File.join(module_path, "target/#{module_instance.name}-1.0-SNAPSHOT.war")).should be_true
+    end
   end
 
   # test if building is failed using type and name is failed
@@ -191,7 +252,9 @@ describe 'rays build' do
       Rays::Core.instance.reload
       lambda { command.run(['build', module_instance.type, module_instance.name]) }.should raise_error
     end
-    Dir.exists?(File.join(module_path, 'target')).should_not be_true
+    unless module_instance.type.to_sym == :servicebuilder or module_instance.type.to_sym == :ext
+      Dir.exists?(File.join(module_path, 'target')).should_not be_true
+    end
   end
 
   # test if building is successful with no parameters
@@ -200,11 +263,13 @@ describe 'rays build' do
     Dir.exists?(File.join(module_path, 'target')).should_not be_true
     in_directory(root_dir) do
       Rays::Core.instance.reload
-      command.run(%w(build))
+      lambda { command.run(%w(build)) }.should_not raise_error
     end
 
-    Dir.exists?(File.join(module_path, 'target')).should be_true
-    File.exist?(File.join(module_path, "target/#{module_instance.name}-1.0.war")).should be_true
+    unless module_instance.type.to_sym == :servicebuilder or module_instance.type.to_sym == :ext
+      Dir.exists?(File.join(module_path, 'target')).should be_true
+      File.exist?(File.join(module_path, "target/#{module_instance.name}-1.0-SNAPSHOT.war")).should be_true
+    end
   end
 
   # test if building is failed with no parameters
@@ -213,8 +278,11 @@ describe 'rays build' do
     Dir.exists?(File.join(module_path, 'target')).should_not be_true
     in_directory(root_dir) do
       Rays::Core.instance.reload
-      lambda { command.run(%w(build))}.should raise_error
+      lambda { command.run(%w(build)) }.should raise_error
     end
-    Dir.exists?(File.join(module_path, 'target')).should_not be_true
+
+    unless module_instance.type.to_sym == :servicebuilder or module_instance.type.to_sym == :ext
+      Dir.exists?(File.join(module_path, 'target')).should_not be_true
+    end
   end
 end
