@@ -28,6 +28,7 @@ Follow rvm instructions or just reopen shell window.
 2. Install rvm packages
  $ rvm pkg install zlib
  $ rvm pkg install openssl
+ $ rvm pkg install libxml2
  $ rvm pkg install readline # optional
 
 3. Install ruby 1.9.3 or higher
