@@ -1,4 +1,3 @@
-=begin
 Copyright (c) 2012 Dmitri Carpov
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -19,18 +18,3 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-=end
-
-module Rays
-  module AppModule
-    class PortletModule < Module
-      register :portlet
-      directory 'portlets'
-      archetype 'liferay-portlet-archetype'
-      generator Worker::Manager.instance.create :generator, :maven
-      builder Worker::Manager.instance.create :builder, :maven
-      deployer Worker::Manager.instance.create :deployer, :maven
-      cleaner Worker::Manager.instance.create :cleaner, :maven
-    end
-  end
-end
