@@ -1,11 +1,14 @@
 #!/usr/bin/env ruby
 require 'colorize'
+require 'fileutils'
+require 'find'
 
 registered = false
 
 config_dir = '.rays_config'
 config_path = "#{ENV['HOME']}/#{config_dir}"
 script_file = "$HOME/#{config_dir}/scripts/rays"
+script_file_full_path = "#{ENV['HOME']}/#{config_dir}/scripts/rays"
 
 command = "\n[[ -s \"#{script_file}\" ]] && source \"#{script_file}\" # Load RAYS into a shell session *as a function*'\n\n"
 
@@ -29,8 +32,6 @@ unless registered
 
   # Create directory and copy template
   unless Dir.exists?(config_path)
-    require 'fileutils'
-    require 'find'
     FileUtils.mkdir(config_path)
     template_path = "#{File.expand_path(File.dirname(__FILE__))}/../lib/rays/config/templates/global"
     Find.find(template_path) do |file|
@@ -44,5 +45,11 @@ unless registered
     file.write(command)
   end
 
-  puts "Please run '. #{profile_file}' or reopen your shell window".yellow
+else
+  # update script file.
+  if File.exist?(script_file_full_path)
+    FileUtils.cp("#{File.expand_path(File.dirname(__FILE__))}/../lib/rays/config/templates/global/scripts/rays", script_file_full_path)
+  end
 end
+
+puts "Please run '. #{profile_file}' or reopen your shell window".yellow
