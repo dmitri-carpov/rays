@@ -13,7 +13,7 @@ Rays should work on any Unix-like system.
 
 Detailed user guide: https://github.com/dmitri-carpov/rays/wiki/Usage
 
-= INSTALLATION
+== Installation
 
 Make sure you have development tools installed (gcc -v).
 
