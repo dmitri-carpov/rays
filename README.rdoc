@@ -1,4 +1,3 @@
-=begin
 Rays is a command line tool for Liferay development.
 It replaces long lines of maven archetype generators with short rails-like commands.
 Also it allows to manage different environments (development, staging ...)
@@ -62,4 +61,3 @@ reopen shell window and type 'mvn -v', maven information block should appear
 
 (7) Use rays
  $ rays --help
-=end
