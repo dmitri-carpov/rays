@@ -56,5 +56,8 @@ reopen shell window and type 'mvn -v', maven information block should appear
 - Install rays gem file
  $ gem install rays-0.1.0.gem
 
-6. Use rays
+6. Initialize rays
+ $ __rays_init
+
+7. Use rays
  $ rays --help

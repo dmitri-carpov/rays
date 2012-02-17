@@ -1,3 +1,5 @@
+require('colorize')
+
 Gem::Specification.new do |s|
   s.name        = 'rays'
   s.version     = '0.1.0'
@@ -18,11 +20,8 @@ Gem::Specification.new do |s|
 
   s.files       = Dir['lib/**/*', 'lib/rays/config/templates/project/.rays', 'rubygems_hooks.rb']
   s.executables << '__rays_exec.rb'
-  s.post_install_message = lambda {
-    require('./rubygems_hooks.rb')
-    require('colorize')
-    return "registered rays function in your bash profile\nplease reopen your shell window".green
-  }.call # awful way to do it, until a proper way to set gem hooks is found
+  s.executables << '__rays_init'
+  s.post_install_message = "Please run '__rays_init' after installation".red
 end
 
 
