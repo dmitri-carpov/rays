@@ -52,7 +52,7 @@ add to ~/.bashrc or ~/.bash_profile
 reopen shell window and type 'mvn -v', maven information block should appear
 
 === 5. Install rays
-- Download rays gem from (https://github.com/dmitri-carpov/rays/blob/master/rays-0.1.0.gem?raw=true)
+- Download rays gem from (https://github.com/dmitri-carpov/rays/blob/master/rays-1.0.0.gem?raw=true)
 - Install rays gem file
  $ gem install rays-0.1.0.gem
 

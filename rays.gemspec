@@ -2,8 +2,8 @@ require('colorize')
 
 Gem::Specification.new do |s|
   s.name        = 'rays'
-  s.version     = '0.1.0'
-  s.summary     = 'SFL Liferay developer tool'
+  s.version     = '1.0.0'
+  s.summary     = 'Liferay developer tool'
   s.description = 'Command line tool to create and manage liferay projects'
 
   s.author      = 'Dmitri Carpov'
