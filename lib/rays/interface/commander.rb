@@ -329,7 +329,7 @@ class RaysCommand < Clamp::Command
       elsif action.eql? 'log'
         Rays::Controller.instance.liferay_log
       else
-        $log.error('I cannot do what you ask. see <!rays liferay --help!>.')
+        $log.error('Wrong command. see <!rays liferay --help!>.')
       end
     end
   end
