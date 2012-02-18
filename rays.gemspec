@@ -2,13 +2,13 @@ require('colorize')
 
 Gem::Specification.new do |s|
   s.name        = 'raystool'
-  s.version     = '1.0.2'
+  s.version     = '1.0.3'
   s.summary     = 'Liferay developer tool'
   s.description = 'Command line tool to create and manage liferay projects'
 
   s.author      = 'Dmitri Carpov'
   s.email       = 'dmitri.carpov@gmail.com'
-  s.homepage    = 'http://projects.savoirfairelinux.net/projects/rays'
+  s.homepage    = 'https://github.com/dmitri-carpov/rays'
 
   s.add_dependency('clamp')
   s.add_dependency('rsolr')
