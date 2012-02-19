@@ -5,7 +5,6 @@ require 'colorize'
 
 task :gem => [:spec] do
   system "gem build rays.gemspec"
-  system "gem install raystool-1.0.0.gem"
 end
 
 if ARGV.include?('--no-spec')
