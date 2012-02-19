@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.files       = Dir['lib/**/*', 'lib/rays/config/templates/project/.rays', 'rubygems_hooks.rb']
   s.executables << '__rays_exec.rb'
   s.executables << '__rays_init'
-  s.post_install_message = "Please run '__rays_init' after installation".red
+  s.post_install_message = "#{"Please run '__rays_init' after installation".red}\n#{"Homepage: #{s.homepage}".green}"
 end
 
 
