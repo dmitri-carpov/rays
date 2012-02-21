@@ -75,8 +75,8 @@ module Rays
               builder = Nokogiri::XML::Builder.new do |xml|
                 xml.project {
                   xml.name Project.instance.name
-                  xml.groupId Project.instance.package
-                  xml.artifactId Project.instance.name
+                  xml.groupId parent_group_id
+                  xml.artifactId parent_artifact_id
                   xml.version '1.0'
                   xml.packaging 'pom'
                   xml.properties {
@@ -109,11 +109,11 @@ module Rays
           parent_node = Nokogiri::XML::Node.new('parent',doc)
 
           group_id_node = Nokogiri::XML::Node.new('groupId',doc)
-          group_id_node.content = Project.instance.package
+          group_id_node.content = parent_group_id
           parent_node.add_child group_id_node
 
           artifact_id_node = Nokogiri::XML::Node.new('artifactId',doc)
-          artifact_id_node.content = Project.instance.name
+          artifact_id_node.content = parent_artifact_id
           parent_node.add_child artifact_id_node
 
           version_node = Nokogiri::XML::Node.new('version',doc)
@@ -127,6 +127,15 @@ module Rays
           doc.root.children.first.add_previous_sibling parent_node
 
           File.open(module_pom, 'w') { |file| file.write doc.to_xml }
+        end
+
+        private
+        def parent_group_id
+          "#{Project.instance.package}.#{Project.instance.name}"
+        end
+
+        def parent_artifact_id
+          'parent'
         end
       end
     end
