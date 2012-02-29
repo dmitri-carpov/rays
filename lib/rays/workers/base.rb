@@ -127,9 +127,7 @@ module Rays
 
           doc.root.children.first.add_previous_sibling parent_node
 
-          puts "about to remove"
           doc.css('project > version').each do |node|
-            puts "FOUND"
             node.remove
           end
 
