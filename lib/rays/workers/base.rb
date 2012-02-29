@@ -74,6 +74,7 @@ module Rays
             unless File.exists?('pom.xml')
               builder = Nokogiri::XML::Builder.new do |xml|
                 xml.project {
+                  xml.modelVersion '4.0.0'
                   xml.name Project.instance.name
                   xml.groupId parent_group_id
                   xml.artifactId parent_artifact_id
