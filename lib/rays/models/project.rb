@@ -24,12 +24,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 module Rays
   class Project
 
-    attr_reader :name, :package, :liferay
+    attr_reader :name, :version, :package, :liferay
 
     def initialize
       project_config_file = "#{$rays_config.project_root}/config/project.yml"
       project_config = YAML::load_file(project_config_file)
       @name = project_config['name']
+      @version = project_config['version']
       @liferay = project_config['liferay']
       @package = project_config['package']
     end

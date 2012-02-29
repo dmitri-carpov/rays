@@ -78,7 +78,7 @@ module Rays
                   xml.name Project.instance.name
                   xml.groupId parent_group_id
                   xml.artifactId parent_artifact_id
-                  xml.version '1.0'
+                  xml.version Project.instance.version
                   xml.packaging 'pom'
                   xml.properties {
                     xml << "<liferay.version>#{Project.instance.liferay}</liferay.version>"
@@ -118,7 +118,7 @@ module Rays
           parent_node.add_child artifact_id_node
 
           version_node = Nokogiri::XML::Node.new('version',doc)
-          version_node.content = '1.0'
+          version_node.content = Project.instance.version
           parent_node.add_child version_node
 
           relative_path_node = Nokogiri::XML::Node.new('relativePath',doc)
@@ -126,6 +126,12 @@ module Rays
           parent_node.add_child relative_path_node
 
           doc.root.children.first.add_previous_sibling parent_node
+
+          puts "about to remove"
+          doc.css('project > version').each do |node|
+            puts "FOUND"
+            node.remove
+          end
 
           File.open(module_pom, 'w') { |file| file.write doc.to_xml }
         end

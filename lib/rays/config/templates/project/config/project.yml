@@ -1,4 +1,5 @@
 name: project
+version: 1.0
 liferay: 6.1.0
 package: com.example.liferay
 
