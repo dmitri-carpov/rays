@@ -25,7 +25,7 @@ module Rays
   module AppModule
     class LayoutModule < Module
       register :layout
-      directory 'layouts'
+      directory 'layouttpl'
       archetype 'liferay-layouttpl-archetype'
       generator Worker::Manager.instance.create :generator, :maven
       builder Worker::Manager.instance.create :builder, :maven
