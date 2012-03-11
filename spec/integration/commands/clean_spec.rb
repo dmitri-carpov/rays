@@ -153,7 +153,7 @@ describe 'rays clean' do
     it 'should clean inside module directory' do
       name = 'test'
       module_instance = generate_and_build(:servicebuilder, name).first
-      in_directory(File.join(module_instance.path, "#{name}-portlet-service")) do
+      in_directory(File.join(module_instance.path, "#{module_instance.name}-portlet-service")) do
         Rays::Core.instance.reload
         is_built(module_instance).should be_true
         lambda { command.run(['clean', module_instance.type, module_instance.name]) }.should_not raise_error
@@ -369,7 +369,7 @@ describe 'rays clean' do
 
   def is_built(module_instance)
     unless module_instance.type.to_sym == :servicebuilder or module_instance.type.to_sym == :ext
-      file = File.join(module_instance.path, "target/#{module_instance.name}-1.0-SNAPSHOT.war")
+      file = File.join(module_instance.path, "target/#{module_instance.name}-#{Rays::Project.instance.version}.war")
       File.exist?(file)
     else
       !Rays::Utils::FileUtils.find_down(module_instance.path, /.*\.war$/).empty?

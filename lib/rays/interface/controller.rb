@@ -63,7 +63,7 @@ module Rays
     # Create a module
     #
     def create_module(type, name, generator)
-      name = "#{name}-#{type}"
+      name = "#{name}-#{type}" unless type.eql? 'ext'
       log_block("create #{type} #{name}") do
         AppModule::Manager.instance.create type, name, generator
       end

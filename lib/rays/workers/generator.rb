@@ -38,10 +38,12 @@ module Rays
               " -DarchetypeVersion=#{Project.instance.liferay}" <<
               " -DgroupId=#{Project.instance.package}.#{app_module.type}" <<
               " -DartifactId=#{app_module.name}" <<
-              " -Dversion=1.0-SNAPSHOT" <<
+              " -Dversion=#{Project.instance.version}" <<
               " -Dpackaging=war -B"
           rays_exec(create_cmd)
-          MavenUtil.link_to_parent File.join(app_module.path, 'pom.xml')
+          Utils::FileUtils.find_down(app_module.path, 'pom\.xml').each do |pom_file|
+            MavenUtil.process_pom pom_file
+          end
         end
       end
     end

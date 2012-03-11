@@ -155,7 +155,7 @@ describe 'rays deploy' do
     it 'should deploy inside module directory' do
       name = 'test'
       module_instance = generate(:servicebuilder, name).first
-      in_directory(File.join(module_instance.path, "#{name}-portlet-service")) do
+      in_directory(File.join(module_instance.path, "#{module_instance.name}-portlet-service")) do
         Rays::Core.instance.reload
         #stub_remote @deploy_dir
         lambda { command.run(['deploy', module_instance.type, module_instance.name]) }.should_not raise_error
@@ -373,16 +373,23 @@ describe 'rays deploy' do
   #
 
   def is_deployed(module_instance)
+    version = ""
+
+    in_directory(@project_root) do
+      Rays::Core.instance.reload
+      version = Rays::Project.instance.version
+    end
+
     unless module_instance.type.to_sym == :servicebuilder or module_instance.type.to_sym == :ext
-      file = File.join(@deploy_dir, "#{module_instance.name}-1.0-SNAPSHOT.war")
+      file = File.join(@deploy_dir, "#{module_instance.name}-#{version}.war")
       File.exist?(file)
     else
       if module_instance.type.to_sym == :servicebuilder
-        file = File.join(@deploy_dir, "#{module_instance.name}-portlet-1.0-SNAPSHOT.war")
+        file = File.join(@deploy_dir, "#{module_instance.name}-portlet-#{version}.war")
         File.exist?(file)
       else
-        file1 = File.join(@deploy_dir, "#{module_instance.name}-ext-1.0-SNAPSHOT.war")
-        file2 = File.join(@deploy_dir, "#{module_instance.name}-ext-web-1.0-SNAPSHOT.war")
+        file1 = File.join(@deploy_dir, "#{module_instance.name}-ext-#{version}.war")
+        file2 = File.join(@deploy_dir, "#{module_instance.name}-ext-web-#{version}.war")
         File.exist?(file1) and File.exist?(file2)
       end
 

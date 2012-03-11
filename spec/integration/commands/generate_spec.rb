@@ -163,6 +163,9 @@ describe 'rays g' do
       Rays::Core.instance.reload
       lambda { command.run(['g', module_class.type, name]) }.should_not raise_error
     end
+
+    name = apply_type_suffix_policy(module_class.type, name)
+
     Dir.exist?("#{@project_root}/#{module_class.base_directory}/#{name}").should be_true
     File.exist?("#{@project_root}/#{module_class.base_directory}/#{name}/.module").should be_true
     File.exist?("#{@project_root}/#{module_class.base_directory}/#{name}/pom.xml").should be_true
@@ -175,6 +178,9 @@ describe 'rays g' do
       Rays::Core.instance.reload
       lambda { command.run(['g', module_class.type, name]) }.should raise_error
     end
+
+    name = apply_type_suffix_policy(module_class.type, name)
+
     Dir.exist?("#{@project_root}/#{module_class.base_directory}/#{name}").should_not be_true
   end
 end

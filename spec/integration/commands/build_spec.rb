@@ -97,7 +97,7 @@ describe 'rays build' do
     it 'should build inside module directory' do
       name = 'test'
       module_instance = generate(:servicebuilder, name).first
-      should_pass_build_by_name_test(module_instance, File.join(module_instance.path, 'test-portlet-service'))
+      should_pass_build_by_name_test(module_instance, File.join(module_instance.path, "#{module_instance.name}-portlet-service"))
     end
 
     it 'should fail from outside project directory' do
@@ -240,7 +240,7 @@ describe 'rays build' do
 
     unless module_instance.type.to_sym == :servicebuilder or module_instance.type.to_sym == :ext
       Dir.exists?(File.join(module_path, 'target')).should be_true
-      File.exist?(File.join(module_path, "target/#{module_instance.name}-1.0-SNAPSHOT.war")).should be_true
+      File.exist?(File.join(module_path, "target/#{module_instance.name}-#{Rays::Project.instance.version}.war")).should be_true
     end
   end
 
@@ -268,7 +268,7 @@ describe 'rays build' do
 
     unless module_instance.type.to_sym == :servicebuilder or module_instance.type.to_sym == :ext
       Dir.exists?(File.join(module_path, 'target')).should be_true
-      File.exist?(File.join(module_path, "target/#{module_instance.name}-1.0-SNAPSHOT.war")).should be_true
+      File.exist?(File.join(module_path, "target/#{module_instance.name}-#{Rays::Project.instance.version}.war")).should be_true
     end
   end
 

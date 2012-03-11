@@ -124,10 +124,19 @@ module Rays
       in_directory(@project_root) do
         module_classes.each do |module_class|
           command.run(['g', module_class.type, name])
+          name = apply_type_suffix_policy(module_class.type, name)
           module_instances << Rays::AppModule::Manager.instance.get(module_class.type, name)
         end
       end
       module_instances
+    end
+
+    #
+    # apply type suffix policy
+    #
+    def apply_type_suffix_policy(type, name)
+      name = "#{name}-#{type}" unless type.eql? 'ext'
+      name
     end
 
     #
@@ -141,6 +150,7 @@ module Rays
         module_classes.each do |module_class|
           generate(type, name)
           command.run(['build', module_class.type, name])
+          name = apply_type_suffix_policy(module_class.type, name)
           module_instances << Rays::AppModule::Manager.instance.get(module_class.type, name)
         end
       end

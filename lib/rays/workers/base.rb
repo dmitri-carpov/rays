@@ -63,7 +63,7 @@ module Rays
 
     class MavenUtil
       class << self
-        def link_to_parent(module_pom)
+        def process_pom(module_pom)
           check_parent_pom
           add_parent_pom_to module_pom
         end
@@ -90,6 +90,8 @@ module Rays
                 file.write(builder.to_xml)
               end
 
+              # install parent
+              rays_exec('mvn clean install')
             end
           end
         end
@@ -107,25 +109,27 @@ module Rays
             end
           end
 
-          parent_node = Nokogiri::XML::Node.new('parent',doc)
+          if doc.css('project > parent').empty?
+            parent_node = Nokogiri::XML::Node.new('parent', doc)
 
-          group_id_node = Nokogiri::XML::Node.new('groupId',doc)
-          group_id_node.content = parent_group_id
-          parent_node.add_child group_id_node
+            group_id_node = Nokogiri::XML::Node.new('groupId', doc)
+            group_id_node.content = parent_group_id
+            parent_node.add_child group_id_node
 
-          artifact_id_node = Nokogiri::XML::Node.new('artifactId',doc)
-          artifact_id_node.content = parent_artifact_id
-          parent_node.add_child artifact_id_node
+            artifact_id_node = Nokogiri::XML::Node.new('artifactId', doc)
+            artifact_id_node.content = parent_artifact_id
+            parent_node.add_child artifact_id_node
 
-          version_node = Nokogiri::XML::Node.new('version',doc)
-          version_node.content = Project.instance.version
-          parent_node.add_child version_node
+            version_node = Nokogiri::XML::Node.new('version', doc)
+            version_node.content = Project.instance.version
+            parent_node.add_child version_node
 
-          relative_path_node = Nokogiri::XML::Node.new('relativePath',doc)
-          relative_path_node.content = '../../pom.xml'
-          parent_node.add_child relative_path_node
+            #relative_path_node = Nokogiri::XML::Node.new('relativePath', doc)
+            #relative_path_node.content = '../../pom.xml'
+            #parent_node.add_child relative_path_node
 
-          doc.root.children.first.add_previous_sibling parent_node
+            doc.root.children.first.add_previous_sibling parent_node
+          end
 
           doc.css('project > version').each do |node|
             node.remove

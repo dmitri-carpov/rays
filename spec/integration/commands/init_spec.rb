@@ -26,8 +26,8 @@ describe 'rays init' do
       modules << 'hooks/test_hook2'
       modules << 'themes/test_theme'
       modules << 'themes/test_theme2'
-      modules << 'layouts/test_layout'
-      modules << 'layouts/test_layout2'
+      modules << 'layouttpl/test_layout'
+      modules << 'layouttpl/test_layout2'
 
       modules.each do |appmodule_name|
         FileUtils.mkdir_p(appmodule_name)

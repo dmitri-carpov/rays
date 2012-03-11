@@ -12,6 +12,7 @@ describe 'appmodule manager' do
       name = 'test'
       module_class = module_types[:portlet]
       command.run(['g', module_class.type, name])
+      name = apply_type_suffix_policy(module_class.type, name)
       manager = Rays::AppModule::Manager.instance
       module_instance = manager.get(module_class.type, name)
       module_instance.should_not be_nil
