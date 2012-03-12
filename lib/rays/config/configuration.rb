@@ -207,7 +207,7 @@ module Rays
             java_home = java_config['home']
             java_bin = java_config['bin']
           end
-          application_service = create_application_service_for(code, liferay_config)
+          application_service = create_application_service_for('liferay', code, liferay_config)
 
           liferay_server = Server::LiferayServer.new 'liferay server', host, remote, java_home, java_bin, port, deploy, data_directory, application_service
         end
@@ -252,7 +252,7 @@ module Rays
             java_home = java_config['home']
             java_bin = java_config['bin']
           end
-          application_service = create_application_service_for(code, solr_config)
+          application_service = create_application_service_for('solr', code, solr_config)
 
           solr_server = Server::SolrServer.new 'solr server', host, remote, java_home, java_bin, port, url, application_service
         end
@@ -288,7 +288,7 @@ module Rays
     #
     # Create application service for.
     #
-    def create_application_service_for(code, config)
+    def create_application_service_for(name, code, config)
       application_service = nil
       application_service_config = config['service']
       host = config['host']
@@ -310,7 +310,7 @@ module Rays
           application_remote = nil
         end
 
-        application_service = Service::ApplicationService.new 'liferay', host, port, start_script, debug_script, stop_script, log_file, application_remote
+        application_service = Service::ApplicationService.new name, host, port, start_script, debug_script, stop_script, log_file, application_remote, path
       end
       application_service
     end

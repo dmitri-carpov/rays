@@ -25,7 +25,7 @@ module Rays
   module Service
     class ApplicationService
 
-      def initialize(name, host, port, start_script, debug_script, stop_script, log_file, remote)
+      def initialize(name, host, port, start_script, debug_script, stop_script, log_file, remote, path)
         @name = name
         @host = host
         @port = port
@@ -34,16 +34,22 @@ module Rays
         @stop_script = stop_script
         @log_file = log_file
         @remote = remote
+        @path = path
       end
 
       def host
-        raise RaysException.new(missing_environment_option('Service', 'host')) if @host.nil?
+        raise RaysException.new(missing_environment_option('service', 'host')) if @host.nil?
         @host
       end
 
       def port
-        raise RaysException.new(missing_environment_option('Service', 'port')) if @port.nil?
+        raise RaysException.new(missing_environment_option('service', 'port')) if @port.nil?
         @port
+      end
+
+      def path
+        raise RaysException.new(missing_environment_option('service', 'path')) if @path.nil?
+        @path
       end
 
       # Start service

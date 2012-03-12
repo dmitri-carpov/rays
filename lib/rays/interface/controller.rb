@@ -152,6 +152,10 @@ module Rays
     # Point methods
     #
     def point(path, name)
+      if 'appserver'.eql?(name)
+        $log.error('reserved point name')
+        return
+      end
       log_block("remember a point") do
         $rays_config.point(path, name)
       end
@@ -180,16 +184,21 @@ module Rays
         points = $rays_config.points
         point_name = name
         point_name ||= 'default'
-        if !points.nil? and points.include?(point_name)
+        dir = ''
+        if "appserver".eql? name
+          dir = $rays_config.environments['local'].liferay.service.path
+        elsif !points.nil? and points.include?(point_name)
           dir = points[point_name]
-          if Dir.exists?(dir)
-            $log.info("<!#{dir}!>") # tricky part. it logs to shell the directory name which will be switch by a bash script.
-          else
-            raise RaysException
-          end
         else
           raise RaysException.new("no point #{name}. use <!rays point!> to create points")
         end
+
+        if Dir.exists?(dir)
+          $log.info("<!#{dir}!>") # tricky part. it logs to shell the directory name which will be switch by a bash script.
+        else
+          raise RaysException
+        end
+
       end
     end
 
