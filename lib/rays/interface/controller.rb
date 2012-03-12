@@ -228,6 +228,40 @@ module Rays
     end
 
     #
+    # Restart liferay's application server
+    #
+    def liferay_restart(force=false)
+      show_environment_info
+      task('restarting server', 'stop and start command has been sent', 'failed to start the server') do
+        service = $rays_config.environment.liferay.service
+        if service.remote? and !force
+          $log.warn("WARNING: you are trying to start a remote server.")
+          $log.warn("Your current environment is <!#{$rays_config.environment.name}!>.")
+          $log.warn("Use <!--force!> option if you really want to start remote liferay server.")
+          return
+        end
+        service.restart_normal
+      end
+    end
+
+    #
+    # Restart liferay's application server in debug mode
+    #
+    def liferay_restart_debug(force=false)
+      show_environment_info
+      task('restarting server in debug mode', 'stop and debug command has been sent', 'failed to start the server') do
+        service = $rays_config.environment.liferay.service
+        if service.remote? and !force
+          $log.warn("WARNING: you are trying to start a remote server.")
+          $log.warn("Your current environment is <!#{$rays_config.environment.name}!>.")
+          $log.warn("Use <!--force!> option if you really want to start remote liferay server.")
+          return
+        end
+        service.restart_debug
+      end
+    end
+
+    #
     # Start liferay's application server in debug mode
     #
     def liferay_debug(force=false)

@@ -171,7 +171,7 @@ _rays_complete () {
 
 		liferay)
 			_rayscomp "
-				start debug stop status log
+				start debug stop status log restart restart-debug
 				--force $default_args
 			"
 			;;

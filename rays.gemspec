@@ -2,7 +2,7 @@ require('colorize')
 
 Gem::Specification.new do |s|
   s.name        = 'raystool'
-  s.version     = '1.0.11'
+  s.version     = '1.1.0'
   s.summary     = 'Liferay developer tool'
   s.description = 'Command line tool to create and manage liferay projects'
 

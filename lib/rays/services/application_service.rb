@@ -50,6 +50,7 @@ module Rays
       def start
         unless alive?
           execute @start_script
+          log
         else
           raise RaysException.new('service is already running')
         end
@@ -63,6 +64,7 @@ module Rays
         end
         unless alive?
           execute @debug_script
+          log
         else
           raise RaysException.new('service is already running')
         end
@@ -74,6 +76,20 @@ module Rays
           execute @stop_script
         else
           raise RaysException.new('service is not running')
+        end
+      end
+
+      # normal restart
+      def restart_normal
+        restart do
+          start
+        end
+      end
+
+      # restart in debug mode
+      def restart_debug
+        restart do
+          debug
         end
       end
 
@@ -109,6 +125,29 @@ module Rays
           remote.exec(command)
         else
           rays_exec(command)
+        end
+      end
+
+      # restart service
+      def restart
+        if alive?
+          stop
+        end
+        started = false
+        tries_limit = 30
+        try = 0
+        while try < tries_limit do
+          unless alive?
+            yield
+            started = true
+            break
+          end
+          try += 1
+          sleep(1)
+        end
+
+        unless started
+          raise RaysException.new('service is stopping too long.')
         end
       end
     end

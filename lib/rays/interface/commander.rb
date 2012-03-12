@@ -313,7 +313,7 @@ class RaysCommand < Clamp::Command
   # LIFERAY
   #
   subcommand 'liferay', 'manage liferay application server' do
-    parameter 'action', 'start | debug | stop | status | log'
+    parameter 'action', 'start | debug | stop | status | log | restart | restart-debug'
     option '--force', :flag, 'use it only to [start | stop] remote servers. be careful!'
 
     def execute
@@ -322,6 +322,10 @@ class RaysCommand < Clamp::Command
         Rays::Controller.instance.liferay_start(force?)
       elsif action.eql? 'debug'
         Rays::Controller.instance.liferay_debug(force?)
+      elsif action.eql? 'restart'
+        Rays::Controller.instance.liferay_restart(force?)
+      elsif action.eql? 'restart-debug'
+        Rays::Controller.instance.liferay_restart_debug(force?)
       elsif action.eql? 'stop'
         Rays::Controller.instance.liferay_stop(force?)
       elsif action.eql? 'status'
