@@ -27,19 +27,8 @@ require 'rays/interface/controller'
 class RaysCommand < Clamp::Command
   option '--silent', :flag, 'no output information'
   option '--debug', :flag, 'debug information'
-  option %w(-v --version), :flag, 'version'
 
   usage '[option] command [sub-command] [command option]'
-
-  def parse(arguments)
-    begin
-      super
-      show_version
-    rescue => e
-      show_version
-      raise e
-    end
-  end
 
   def execute
     if debug?
@@ -48,6 +37,16 @@ class RaysCommand < Clamp::Command
       $log.silent_on
     end
     super
+  end
+
+  #
+  # OUTPUT VERSION
+  #
+  subcommand 'version', 'show raystool version' do
+
+    def execute
+      $log.info Gem.loaded_specs['raystool'].version
+    end
   end
 
   #
@@ -196,6 +195,7 @@ class RaysCommand < Clamp::Command
       unless module_instance.nil?
         modules << module_instance
       else
+        version
         modules.concat(Rays::AppModule::Manager.instance.all)
       end
 
@@ -375,15 +375,6 @@ class RaysCommand < Clamp::Command
       def execute
         Rays::Controller.instance.solr_status
       end
-    end
-  end
-
-  private
-
-  def show_version
-    if version?
-      $log.info Gem.loaded_specs['raystool'].version
-      exit 0
     end
   end
 end

@@ -116,6 +116,7 @@ _rays_complete () {
 			liferay
 			solr
 			modules
+			version
 		"
 		return
 	fi
