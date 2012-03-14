@@ -78,11 +78,18 @@ module Rays
 
       # Stop service
       def stop
-        if alive?
-          execute @stop_script
-        else
-          raise RaysException.new('service is not running')
+        raise RaysException.new('service is not running') if not alive?
+
+        execute @stop_script
+        10.times do
+          break if not alive?
+          sleep(1)
         end
+
+	if alive?
+          rays_exec("kill -9 `lsof -t -i tcp:#{@port}`")
+          sleep(2)
+	end
       end
 
       # normal restart
@@ -139,22 +146,12 @@ module Rays
         if alive?
           stop
         end
-        started = false
-        tries_limit = 30
-        try = 0
-        while try < tries_limit do
-          unless alive?
-            yield
-            started = true
-            break
-          end
-          try += 1
-          sleep(1)
-        end
 
-        unless started
+        if alive?
           raise RaysException.new('service is stopping too long.')
         end
+
+        yield
       end
     end
   end
