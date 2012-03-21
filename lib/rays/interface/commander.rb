@@ -195,7 +195,6 @@ class RaysCommand < Clamp::Command
       unless module_instance.nil?
         modules << module_instance
       else
-        version
         modules.concat(Rays::AppModule::Manager.instance.all)
       end
 
