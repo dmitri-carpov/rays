@@ -38,6 +38,9 @@ test:
         port: 8080
         deploy: /opt/liferay-portal/deploy
         data: /opt/liferay-portal/data
+        ssh:
+          user: liferay
+          port: 22
         java:
             home: /usr/lib/jvm/java-6-sun
             bin: /usr/bin/java

@@ -56,7 +56,7 @@ module Rays
       def start
         unless alive?
           execute @start_script
-          log
+          log unless remote?
         else
           raise RaysException.new('service is already running')
         end
@@ -70,7 +70,7 @@ module Rays
         end
         unless alive?
           execute @debug_script
-          log
+          log unless remote?
         else
           raise RaysException.new('service is already running')
         end
@@ -86,10 +86,10 @@ module Rays
           sleep(1)
         end
 
-	if alive?
-          rays_exec("kill -9 `lsof -t -i tcp:#{@port}`")
+        if alive?
+          execute ("kill -9 `lsof -t -i tcp:#{@port}`")
           sleep(2)
-	end
+        end
       end
 
       # normal restart
@@ -109,13 +109,13 @@ module Rays
       # Show logs (live)
       def log
         if remote?
-          remote.exec(command)
+          $log.info("Cannot show log of a remote host")
         else
           Thread.new do
             exec("tail -f #{@log_file}")
           end
+          $log.info("Following logs of #{@name} service on #{@host}.\nUse ctrl+c to interrupt.")
         end
-        $log.info("Following logs of #{@name} service on #{@host}.\nUse ctrl+c to interrupt.")
       end
 
       # Is the service resides on a remote service?
@@ -135,7 +135,7 @@ module Rays
       # Executing command on local or a remote server depending on the service configuration.
       def execute(command)
         if remote?
-          remote.exec(command)
+          @remote.exec(command)
         else
           rays_exec(command)
         end
