@@ -48,6 +48,22 @@ module Rays
           @user
         end
 
+        def loop_exec(command)
+          begin
+            Net::SSH.start("#{host}", "#{user}") do |ssh|
+	      ssh.open_channel do |channel|
+                channel.on_data do |ch, data|
+                  $log.info("<!#{data}!>")
+                end
+                channel.exec command
+              end
+              ssh.loop
+            end
+          rescue SystemExit, Interrupt
+            # Ctrl-c
+          end
+        end
+
         def exec(command)
           response = ""
           Net::SSH.start("#{host}", "#{user}") do |ssh|
