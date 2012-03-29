@@ -51,7 +51,7 @@ module Rays
         def loop_exec(command)
           begin
             Net::SSH.start("#{host}", "#{user}") do |ssh|
-	      ssh.open_channel do |channel|
+              ssh.open_channel do |channel|
                 channel.on_data do |ch, data|
                   $log.info("<!#{data}!>")
                 end
