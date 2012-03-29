@@ -109,7 +109,7 @@ module Rays
       # Show logs (live)
       def log
         if remote?
-          $log.info("Cannot show log of a remote host")
+          @remote.loop_exec("tail -f #{@log_file}")
         else
           Thread.new do
             exec("tail -f #{@log_file}")
