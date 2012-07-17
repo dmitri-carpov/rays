@@ -84,6 +84,7 @@ module Rays
       require 'rays/services/application_service'
       require 'rays/services/scm'
       require 'rays/services/database'
+      require 'rays/services/update_manager'
     end
 
     def load_workers

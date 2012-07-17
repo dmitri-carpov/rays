@@ -23,9 +23,12 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
-require 'rays/interface/commander'
-
 begin
+  $command = ARGV[0]
+  if '--debug'.eql? $command
+    $command = ARGV[1]
+  end
+  require 'rays/interface/commander'
   RaysCommand.run('rays', ARGV, {})
 rescue => e
 end

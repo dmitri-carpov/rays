@@ -34,7 +34,13 @@ module Rays
       @silent = false
       $global_config_path ||= "#{ENV['HOME']}/.rays_config"
       @global_config_file = nil
-      load_config
+
+      init_global_config
+
+      init_project_root
+      unless @project_root.nil?
+        load_project_config
+      end
     end
 
     #
@@ -58,6 +64,7 @@ module Rays
     # Set environment
     #
     def environment=(environment_name)
+      project_root # check if it's inside a project dir
       if environments.include?(environment_name)
         yaml_file = get_profile_file
         yaml_file.properties['environment'] = environment_name
@@ -158,12 +165,12 @@ module Rays
     #
     # Initializes environments and project parameters.
     #
-    def load_config
-      log_block('process configuration file') do
-        init_global_config
-        init_project_root
-        return if @project_root.nil?
-
+    def load_project_config
+      log_block('load project configuration') do
+        skip_version_check_commands = %w(go point points version)
+        unless skip_version_check_commands.include? $command
+          version_check
+        end
         init_environments
       end
     end
@@ -176,6 +183,13 @@ module Rays
     def init_project_root
       return unless @project_root.nil?
       @project_root = Rays::Utils::FileUtils.find_up('.rays')
+    end
+
+    #
+    # Check version
+    #
+    def version_check
+      Rays::Service::UpdateManager.new(get_dot_rays_file).check
     end
 
     #
