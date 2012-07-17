@@ -59,7 +59,7 @@ module Rays
     #
     def environment=(environment_name)
       if environments.include?(environment_name)
-        yaml_file = get_dot_rays_file
+        yaml_file = get_profile_file
         yaml_file.properties['environment'] = environment_name
         yaml_file.write
         Core.instance.reload
@@ -276,7 +276,7 @@ module Rays
 
 
       # load current environment
-      yaml_file = get_dot_rays_file
+      yaml_file = get_profile_file
       env = yaml_file.properties['environment']
       if @environments.include?(env)
         @environment = @environments[env]
@@ -332,6 +332,12 @@ module Rays
     def get_dot_rays_file
       dot_rays_file = File.join(project_root, '.rays')
       Utils::FileUtils::YamlFile.new dot_rays_file
+    end
+
+    def get_profile_file
+      profile_file = File.join(project_root, 'config/.profile')
+      FileUtils.touch profile_file unless File.exists? profile_file
+      Utils::FileUtils::YamlFile.new profile_file
     end
 
     #
