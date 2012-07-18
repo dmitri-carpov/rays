@@ -198,7 +198,7 @@ class RaysCommand < Clamp::Command
         modules.concat(Rays::AppModule::Manager.instance.all)
         # exclude ext plugin from mass deploy
         modules.delete_if do |mod|
-          mod.type.eql? 'ext'
+          mod.type.eql? 'ext' or mod.skip_mass_deploy
         end
       end
 

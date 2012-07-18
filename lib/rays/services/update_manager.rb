@@ -45,6 +45,7 @@ module Rays
         @updaters = Hash.new
         @updaters[Gem::Version.create('1.2.0')] = 'update_1_2_0'
         @updaters[Gem::Version.create('1.2.1')] = 'update_1_2_1'
+        @updaters[Gem::Version.create('1.2.2')] = 'update_1_2_2'
       end
 
       def check
@@ -103,6 +104,10 @@ module Rays
 
       def update_1_2_1
         $log.info "Update info: now you can specify ssh hostname for liferay server if it is not the same as liferay's (web) hostname"
+      end
+
+      def update_1_2_2
+        $log.info "Update info: now you can add skip_mass_deploy: true parameter to .module file to ignore this module for mass deploy"
       end
 
       def sync_version version

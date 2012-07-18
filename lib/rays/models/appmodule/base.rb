@@ -74,7 +74,7 @@ module Rays
       #
       # INSTANCE
       #
-      attr_reader :type, :name, :archetype_name
+      attr_reader :type, :name, :archetype_name, :skip_mass_deploy
 
       def initialize(name)
         @name = name
@@ -86,6 +86,7 @@ module Rays
         @builder = self.class.build_worker
         @deployer = self.class.deploy_worker
         @cleaner = self.class.clean_worker
+        @skip_mass_deploy = false
 
         descriptor = load_descriptor
         unless descriptor.nil?
@@ -97,6 +98,9 @@ module Rays
           end
           unless descriptor['cleaner'].nil?
             @cleaner = Worker::Manager.instnace.create :cleaner, descriptor['cleaner'].to_sym
+          end
+          unless descriptor['skip_mass_deploy'].nil?
+            @skip_mass_deploy = true if descriptor['skip_mass_deploy'].to_s.strip.eql? 'true'
           end
         end
       end
