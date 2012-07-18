@@ -335,7 +335,8 @@ module Rays
     def create_remote_for(config)
       remote = nil
       if !config.nil? and !config['ssh'].nil? and !config['ssh']['user'].nil?
-        host = config['host']
+        host = config['ssh']['host']
+        host ||= config['host']
         port = config['ssh']['port']
         user = config['ssh']['user']
         remote = Service::Remote::SSH.new host, port, user
