@@ -18,7 +18,10 @@ Detailed user guide: https://github.com/dmitri-carpov/rays/wiki/Usage
 Make sure you have development tools installed (gcc -v).
 
 Ubuntu:  $ sudo apt-get install build-essential
+
 MacOS X: install XCode
+
+= PLEASE DO NOT USE sudo DURING THE INSTALLATION =
 
 === 1. Install rvm (http://beginrescueend.com/)
  $ bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
