@@ -2,14 +2,15 @@ local:
     liferay:
         host: localhost
         port: 8080
-        deploy: /opt/liferay-portal/deploy
-        data: /opt/liferay-portal/data
+        root: /opt/liferay-portal
+        deploy: deploy # will be added to the root
+        data: data # will be added to the root
         java:
             home: /usr/lib/jvm/java-6-sun
             bin: /usr/bin/java
         service:
-            path: /opt/liferay-portal/tomcat
-            start_command: bin/startup.sh
+            path: tomcat # will be added to the root
+            start_command: "JAVA_OPTS=\"$JAVA_OPTS -Dexternal-properties=portal-developer.properties\" && bin/startup.sh"
             debug_command: bin/catalina.sh jpda start
             stop_command: bin/shutdown.sh
             log_file: logs/catalina.out

@@ -211,8 +211,9 @@ module Rays
         unless liferay_config.nil?
           host = liferay_config['host']
           port = liferay_config['port']
-          deploy = liferay_config['deploy']
-          data_directory = liferay_config['data']
+          liferay_root = liferay_config['root']
+          deploy = absolute_path(liferay_root, liferay_config['deploy'])
+          data_directory = absolute_path(liferay_root, liferay_config['data'])
           remote = create_remote_for liferay_config
           java_home = nil
           java_bin = nil
@@ -307,9 +308,10 @@ module Rays
       application_service_config = config['service']
       host = config['host']
       port = config['port']
+      root = config['root']
       remote = create_remote_for config
       unless application_service_config.nil?
-        path = application_service_config['path']
+        path = absolute_path(root, application_service_config['path'])
         path = "" if path.nil?
         start_script = File.join(path, application_service_config['start_command'])
         debug_script = nil
@@ -391,6 +393,12 @@ module Rays
         raise RaysException.new("#{command}: has unexpected format")
       end
       true
+    end
+
+    def absolute_path(root, path)
+      return "" if path.nil? or path.empty?
+      return path if root.nil? or root.strip.empty? or path.start_with? "/"
+      "#{root}/#{path}"
     end
 
   end

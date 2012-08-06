@@ -46,6 +46,7 @@ module Rays
         @updaters[Gem::Version.create('1.2.0')] = 'update_1_2_0'
         @updaters[Gem::Version.create('1.2.1')] = 'update_1_2_1'
         @updaters[Gem::Version.create('1.2.2')] = 'update_1_2_2'
+        @updaters[Gem::Version.create('1.2.3')] = 'update_1_2_3'
       end
 
       def check
@@ -108,6 +109,10 @@ module Rays
 
       def update_1_2_2
         $log.info "Update info: now you can add skip_mass_deploy: true parameter to .module file to ignore this module for mass deploy"
+      end
+
+      def update_1_2_3
+        $log.info "Update info: now you can root option in your environment.yml to get rid of absolute paths for data, deploy and service/path. Create a new project to see an example."
       end
 
       def sync_version version
