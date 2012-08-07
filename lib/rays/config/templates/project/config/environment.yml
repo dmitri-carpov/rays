@@ -5,15 +5,13 @@ local:
         root: /opt/liferay-portal
         deploy: deploy # will be added to the root
         data: data # will be added to the root
-        java:
-            home: /usr/lib/jvm/java-6-sun
-            bin: /usr/bin/java
         service:
             path: tomcat # will be added to the root
             start_command: "JAVA_OPTS=\"$JAVA_OPTS -Dexternal-properties=portal-developer.properties\" && bin/startup.sh"
             debug_command: bin/catalina.sh jpda start
             stop_command: bin/shutdown.sh
             log_file: logs/catalina.out
+            deploy: "" # use it for jee6 servers to deploy ejb
     database:
         host: localhost
         port: 3306
@@ -30,9 +28,6 @@ local:
             start_command: bin/startup.sh
             stop_command: bin/shutdown.sh
             log_file: logs/catalina.out
-    backup:
-        directory: /tmp/backup
-        stop: false
 test:
     liferay:
         host: 127.0.0.1
@@ -42,15 +37,13 @@ test:
         ssh:
           user: liferay
           port: 22
-        java:
-            home: /usr/lib/jvm/java-6-sun
-            bin: /usr/bin/java
         service:
             path: /opt/liferay-portal/tomcat
             start_command: bin/startup.sh
             debug_command: bin/catalina.sh jpda start
             stop_command: bin/shutdown.sh
             log_file: logs/catalina.out
+            deploy: ""
     database:
         host: localhost
         port: 3306
@@ -67,6 +60,3 @@ test:
             start_command: bin/startup.sh
             stop_command: bin/shutdown.sh
             log_file: logs/catalina.out
-    backup:
-        directory: /tmp/backup
-        stop: false

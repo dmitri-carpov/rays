@@ -24,7 +24,7 @@ module Rays
   module Worker
     module Generator
 
-      # Maven generator
+      # Liferay Maven generator
       class Maven < BaseWorker
         register :generator, :maven
 
@@ -36,6 +36,28 @@ module Rays
               " -DarchetypeGroupId=com.liferay.maven.archetypes" <<
               " -DarchetypeArtifactId=#{app_module.archetype_name}" <<
               " -DarchetypeVersion=#{Project.instance.liferay}" <<
+              " -DgroupId=#{Project.instance.package}.#{app_module.type}" <<
+              " -DartifactId=#{app_module.name}" <<
+              " -Dversion=#{Project.instance.version}" <<
+              " -Dpackaging=war -B"
+          rays_exec(create_cmd)
+          Utils::FileUtils.find_down(app_module.path, 'pom\.xml').each do |pom_file|
+            MavenUtil.process_pom pom_file
+          end
+        end
+      end
+
+      # EJB Maven generator
+      class EJBMaven < BaseWorker
+        register :generator, :ejb_maven
+
+        include Singleton
+
+        def create(app_module)
+          create_cmd = "#{$rays_config.mvn} archetype:generate" <<
+              " -DarchetypeGroupId=org.codehaus.mojo.archetypes" <<
+              " -DarchetypeArtifactId=ejb-javaee6" <<
+              " -DarchetypeVersion=1.5" <<
               " -DgroupId=#{Project.instance.package}.#{app_module.type}" <<
               " -DartifactId=#{app_module.name}" <<
               " -Dversion=#{Project.instance.version}" <<

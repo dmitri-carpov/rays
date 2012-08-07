@@ -24,7 +24,7 @@ module Rays
   module Worker
     module Builder
 
-      # Maven builder
+      # Liferay Maven builder
       class Maven < BaseWorker
         register :builder, :maven
         include Singleton
@@ -39,7 +39,25 @@ module Rays
         end
       end
 
+      # EJB Maven builder
+      class EJBMaven < BaseWorker
+        register :builder, :ejb_maven
+        include Singleton
+
+        def build(app_module, skip_test = false)
+          execute('build', app_module) do
+            test_args = ''
+            test_args = '-Dmaven.skip.tests=true' if skip_test
+
+            rays_exec("#{$rays_config.mvn} clean")
+            $log.info("Installing EJB with it's client to the local maven repository")
+            rays_exec("#{$rays_config.mvn} install #{test_args}")
+          end
+        end
+      end
+
       # Content builder
+      # deprecated
       class Content < BaseWorker
         register :builder, :content_sync
         include Singleton

@@ -312,6 +312,9 @@ module Rays
       remote = create_remote_for config
       unless application_service_config.nil?
         path = absolute_path(root, application_service_config['path'])
+        deploy = application_service_config['deploy']
+        deploy = absolute_path(path, deploy) unless deploy.nil?
+
         path = "" if path.nil?
         start_script = File.join(path, application_service_config['start_command'])
         debug_script = nil
@@ -326,7 +329,7 @@ module Rays
           application_remote = nil
         end
 
-        application_service = Service::ApplicationService.new name, host, port, start_script, debug_script, stop_script, log_file, application_remote, path
+        application_service = Service::ApplicationService.new name, host, port, start_script, debug_script, stop_script, log_file, application_remote, path, deploy
       end
       application_service
     end

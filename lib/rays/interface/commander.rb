@@ -112,6 +112,15 @@ class RaysCommand < Clamp::Command
       end
     end
 
+    subcommand 'ejb', 'create an EJB' do
+      parameter 'name', 'a module name'
+      option '--generator', 'GENERATOR', 'Generator name, maven by default'
+
+      def execute
+        Rays::Controller.instance.create_module 'ejb', name, generator
+      end
+    end
+
     subcommand 'hook', 'create a hook' do
       parameter 'name', 'a module name'
       option '--generator', 'GENERATOR', 'Generator name, maven by default'
@@ -144,7 +153,7 @@ class RaysCommand < Clamp::Command
   # BUILDER
   #
   subcommand 'build', 'build module(s). build all modules if under project root or a specific module if under module\'s root' do
-    parameter '[type]', 'a module type [portlet | hook | theme | layout]'
+    parameter '[type]', 'a module type [portlet | hook | theme | layout | ext | ejb]'
     parameter '[name]', 'a module name'
     option '--skip-test', :flag, 'use this option if you want to skip module tests'
 
@@ -175,7 +184,7 @@ class RaysCommand < Clamp::Command
   # DEPLOYER
   #
   subcommand 'deploy', 'deploy module(s). deploy all modules if under project root or a specific module if under module\'s root' do
-    parameter '[type]', 'a module type [portlet | hook | theme | layout]'
+    parameter '[type]', 'a module type [portlet | hook | theme | layout | ext | ejb]'
     parameter '[name]', 'a module name'
     option '--skip-test', :flag, 'use this option if you want to skip module tests'
 
@@ -210,7 +219,7 @@ class RaysCommand < Clamp::Command
   # CLEANER
   #
   subcommand 'clean', 'clean module(s). clean all modules if under project root or a specific module if under module\'s root' do
-    parameter '[type]', 'a module type [portlet | hook | theme | layout]'
+    parameter '[type]', 'a module type [portlet | hook | theme | layout | ext | ejb]'
     parameter '[name]', 'a module name'
 
     def execute

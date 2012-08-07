@@ -47,11 +47,12 @@ module Rays
         @updaters[Gem::Version.create('1.2.1')] = 'update_1_2_1'
         @updaters[Gem::Version.create('1.2.2')] = 'update_1_2_2'
         @updaters[Gem::Version.create('1.2.3')] = 'update_1_2_3'
+        @updaters[Gem::Version.create('1.2.4')] = 'update_1_2_4'
       end
 
       def check
         if @current_version < @updaters.keys.max
-          $log.error "Your project version is #{@current_version.to_s}. Your rays version is #{@updaters.keys.max.to_s}. Press 'Enter' to update or 'ctrl+c' to abort."
+          $log.error "Your project version is #{@current_version.to_s}.\nYour rays version is #{@updaters.keys.max.to_s}.\nPress 'Enter' to upgrade or 'ctrl+c' to abort."
           begin
             STDIN.gets.chomp
           rescue Interrupt
@@ -59,7 +60,7 @@ module Rays
           end
           update
         elsif @current_version > @updaters.keys.max
-          $log.error "Your project version is higher than rays one. It is highly recommended to upgrade your rays ('gem update raystool') before continue. Press 'Enter' to continue or 'ctrl+c' to abort."
+          $log.error "Your project version is higher than rays one.\nIt is highly recommended to upgrade your rays ('<!gem update raystool!>') before continue.\nPress 'Enter' to continue or 'ctrl+c' to abort."
           begin
             STDIN.gets.chomp
           rescue Interrupt
@@ -113,6 +114,13 @@ module Rays
 
       def update_1_2_3
         $log.info "Update info: now you can root option in your environment.yml to get rid of absolute paths for data, deploy and service/path. Create a new project to see an example."
+      end
+
+      def update_1_2_4
+        $log.info "Update info: added ejb support.
+\t<!rays g ejb <module name>!> will create ee/ejb/<module name> plugin.
+\t<!rays build ejb <module>!> will package and install ejb with it's client to the local maven repository.
+\t<!rays install ejb <module name>!> will deploy it on a jee6 server, see deploy parameter for service."
       end
 
       def sync_version version

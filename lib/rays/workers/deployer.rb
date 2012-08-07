@@ -26,7 +26,7 @@ module Rays
   module Worker
     module Deployer
 
-      # Maven deployer
+      # Liferay Maven deployer
       class Maven < BaseWorker
         register :deployer, :maven
 
@@ -46,7 +46,27 @@ module Rays
         end
       end
 
+      # EJB deployer
+      class EJBDeploy < BaseWorker
+        register :deployer, :ejb
+
+        include Singleton
+
+        def deploy(app_module)
+          execute('deploy', app_module) do
+            env = $rays_config.environment
+            file_to_deploy = File.expand_path("./target/#{app_module.name}-#{Project.instance.version}.jar")
+            if env.liferay.remote?
+              env.liferay.remote.copy_to(file_to_deploy, env.liferay.service.deploy)
+            else
+              FileUtils.cp(file_to_deploy, env.liferay.service.deploy)
+            end
+          end
+        end
+      end
+
       # Content deployer
+      # deprecated
       class Content < BaseWorker
         register :deployer, :content_sync
 

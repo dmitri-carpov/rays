@@ -66,6 +66,7 @@ module Rays
         def process_pom(module_pom)
           check_parent_pom
           add_parent_pom_to module_pom
+          enable_client_ejb module_pom
         end
 
         private
@@ -136,6 +137,36 @@ module Rays
           end
 
           File.open(module_pom, 'w') { |file| file.write doc.to_xml }
+        end
+
+        def enable_client_ejb(module_pom)
+          doc = Nokogiri::XML(open(module_pom), &:noblanks)
+
+          doc.css('project > build > plugins > plugin').each do |node|
+            group_id = node.css('groupId').text
+            artifact_id = node.css('artifactId').text
+
+            if group_id.eql?('org.apache.maven.plugins') and artifact_id.eql?('maven-ejb-plugin') and
+                node.css('configuration > generateClient').empty?
+
+              $log.info 'Enabling client generation for EJB module ...'
+              configuration_node = node.css('configuration')
+
+              if configuration_node.empty?
+                configuration_node = Nokogiri::XML::Node.new('configuration', doc)
+                node.add_child configuration_node
+              else
+                configuration_node = configuration_node[0]
+              end
+
+              generate_client_node = Nokogiri::XML::Node.new('generateClient', doc)
+              generate_client_node.content = 'true'
+
+              configuration_node.add_child generate_client_node
+
+              File.open(module_pom, 'w') { |file| file.write doc.to_xml }
+            end
+          end
         end
 
         private

@@ -48,15 +48,19 @@ _rays_dir () {
 	done
 }
 
-_rays_module_types="portlet hook theme layout ext"
+_rays_module_types="portlet hook theme servicebuilder layout ext ejb"
 
 _rays_module_find () {
 	local dir="$1/$2s" glob="*-$2"
+    if [ $2 = "ejb" ]; then
+      local dir="$1/ee/ejb"
+    fi
+
 
 	case "$2" in ext) dir="$1/$2" ;; esac
 
 	if [ -d "$dir" ]; then
-		find "$dir/" -maxdepth 1 -type d -name "$glob" -printf "%f "
+		find "$dir/" -maxdepth 2 -type d -name "$glob" -printf "%f "
 	fi
 }
 
@@ -67,7 +71,7 @@ _rays_module () {
 
 	while [[ $c -lt $COMP_CWORD ]] && [ -z "$module_dir" ]; do
 		case "${COMP_WORDS[c]}" in
-		portlet|hook|theme|layout|ext|servicebuilder)
+		portlet|hook|theme|layout|ext|servicebuilder|ejb)
 			_rays_module_find "$dir" "${COMP_WORDS[c]}"
 			return
 			;;
