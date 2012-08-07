@@ -113,7 +113,7 @@ module Rays
       end
 
       def update_1_2_3
-        $log.info "Update info: now you can root option in your environment.yml to get rid of absolute paths for data, deploy and service/path. Create a new project to see an example."
+        $log.info "Update info: now you can use the root option in your environment.yml to get rid of absolute paths for data, deploy and service/path. Create a new project to see an example."
       end
 
       def update_1_2_4
