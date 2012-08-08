@@ -56,6 +56,7 @@ module Rays
           execute('deploy', app_module) do
             env = $rays_config.environment
             file_to_deploy = File.expand_path("./target/#{app_module.name}-#{Project.instance.version}.jar")
+            file_to_deploy = File.expand_path("./target/#{app_module.name}.jar") unless File.exists? file_to_deploy
             if env.liferay.remote?
               env.liferay.remote.copy_to(file_to_deploy, env.liferay.service.deploy)
             else

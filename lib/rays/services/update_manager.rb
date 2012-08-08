@@ -48,6 +48,7 @@ module Rays
         @updaters[Gem::Version.create('1.2.2')] = 'update_1_2_2'
         @updaters[Gem::Version.create('1.2.3')] = 'update_1_2_3'
         @updaters[Gem::Version.create('1.2.4')] = 'update_1_2_4'
+        @updaters[Gem::Version.create('1.2.5')] = 'update_1_2_5'
       end
 
       def check
@@ -121,6 +122,10 @@ module Rays
 \t<!rays g ejb <module name>!> will create ee/ejb/<module name> plugin.
 \t<!rays build ejb <module>!> will package and install ejb with it's client to the local maven repository.
 \t<!rays install ejb <module name>!> will deploy it on a jee6 server, see deploy parameter for service."
+      end
+
+      def update_1_2_5
+        $log.info "Update info: fixed ejb jar file path bug"
       end
 
       def sync_version version
