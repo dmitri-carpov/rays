@@ -111,6 +111,7 @@ module Rays
 
     def load_third_party_dependencies
       require 'fileutils'
+      require 'pathname'
       require 'find'
       require 'yaml'
       require 'logger'

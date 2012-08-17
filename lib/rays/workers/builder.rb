@@ -39,6 +39,23 @@ module Rays
         end
       end
 
+      # EAR Maven builder
+      class EARMaven < BaseWorker
+        register :builder, :ear_maven
+        include Singleton
+
+        def build(app_module, skip_test = false)
+          execute('build', app_module) do
+            test_args = ''
+            test_args = '-Dmaven.skip.tests=true' if skip_test
+
+            rays_exec("#{$rays_config.mvn} clean")
+            $log.info("Installing EE modules to the local repository")
+            rays_exec("#{$rays_config.mvn} install #{test_args}")
+          end
+        end
+      end
+
       # EJB Maven builder
       class EJBMaven < BaseWorker
         register :builder, :ejb_maven

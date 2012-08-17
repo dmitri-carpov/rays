@@ -156,6 +156,13 @@ module Rays
         end
       end
 
+      #
+      # Group ID
+      #
+      def group_id
+        "#{Project.instance.package}.#{type}"
+      end
+
       def path
         File.join(self.class.base_path, @name)
       end

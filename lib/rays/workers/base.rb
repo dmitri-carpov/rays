@@ -66,7 +66,13 @@ module Rays
         def process_pom(module_pom)
           check_parent_pom
           add_parent_pom_to module_pom
-          enable_client_ejb module_pom
+        end
+
+        def process_ejb(app_module)
+          check_parent_pom
+          register_ee_module app_module
+          register_ear_module app_module
+          enable_client_ejb app_module
         end
 
         private
@@ -139,7 +145,76 @@ module Rays
           File.open(module_pom, 'w') { |file| file.write doc.to_xml }
         end
 
-        def enable_client_ejb(module_pom)
+        #
+        #   ========= EE
+        #
+        def register_ee_module(app_module)
+          ee_pom = get_ee_pom
+          module_root = app_module.path
+          ee_root = File.dirname ee_pom
+          relative_path = Pathname.new(module_root).relative_path_from(Pathname.new(ee_root)).to_s
+
+          doc = Nokogiri::XML(open(ee_pom), &:noblanks)
+
+          module_node = Nokogiri::XML::Node.new('module', doc)
+          module_node.content = relative_path
+
+          doc.css('project > modules > module').first.add_previous_sibling module_node
+
+          File.open(ee_pom, 'w') { |file| file.write doc.to_xml }
+        end
+
+        def register_ear_module(app_module)
+          ear_pom = get_ear_pom
+
+          doc = Nokogiri::XML(open(ear_pom), &:noblanks)
+
+
+          # add to dependencies
+          dependency_node = Nokogiri::XML::Node.new('dependency', doc)
+          group_id_node = Nokogiri::XML::Node.new('groupId', doc)
+          group_id_node.content = app_module.group_id
+          artifact_id_node = Nokogiri::XML::Node.new('artifactId', doc)
+          artifact_id_node.content = app_module.name
+          version_node = Nokogiri::XML::Node.new('version', doc)
+          version_node.content = Project.instance.version
+          type_node = Nokogiri::XML::Node.new('type', doc)
+          type_node.content = app_module.type
+          dependency_node.add_child group_id_node
+          dependency_node.add_child artifact_id_node
+          dependency_node.add_child version_node
+          dependency_node.add_child type_node
+
+          doc.css('project > dependencies').first.add_child dependency_node
+
+          # add to modules
+          if app_module.type.eql? 'ejb'
+            module_node = Nokogiri::XML::Node.new('ejbModule', doc)
+            group_id_node = Nokogiri::XML::Node.new('groupId', doc)
+            group_id_node.content = app_module.group_id
+            artifact_id_node = Nokogiri::XML::Node.new('artifactId', doc)
+            artifact_id_node.content = app_module.name
+            module_id_node = Nokogiri::XML::Node.new('moduleId', doc)
+            module_id_node.content = app_module.name
+            bundle_file_name_node = Nokogiri::XML::Node.new('bundleFileName', doc)
+            bundle_file_name_node.content = "#{app_module.name}.jar"
+            module_node.add_child group_id_node
+            module_node.add_child artifact_id_node
+            module_node.add_child module_id_node
+            module_node.add_child bundle_file_name_node
+
+            doc.css('project > build > plugins > plugin').each do |node|
+              next unless node.css('artifactId').first.content.eql? 'maven-ear-plugin'
+              node.css('configuration > modules').first.add_child module_node
+            end
+
+          end
+
+          File.open(ear_pom, 'w') { |file| file.write doc.to_xml }
+        end
+
+        def enable_client_ejb(app_module)
+          module_pom = File.join app_module.path, '/pom.xml'
           doc = Nokogiri::XML(open(module_pom), &:noblanks)
 
           doc.css('project > build > plugins > plugin').each do |node|
@@ -169,7 +244,88 @@ module Rays
           end
         end
 
-        private
+        def get_ee_pom
+          ee_dir = File.join $rays_config.project_root, "ee"
+          FileUtils.mkdir_p ee_dir unless Dir.exists? ee_dir
+          ee_pom_file = File.join ee_dir, "pom.xml"
+
+          unless File.exist? ee_pom_file
+            builder = Nokogiri::XML::Builder.new do |xml|
+              xml.project(:xmlns => 'http://maven.apache.org/POM/4.0.0', :'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+                :'xsi:schemaLocation' => 'http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd') {
+
+                xml.modelVersion '4.0.0'
+                xml.name "#{Project.instance.name} EE Parent"
+                xml.groupId "#{Project.instance.package}"
+                xml.artifactId "ee-parent"
+                xml.packaging 'pom'
+
+                xml.modules {
+                  xml.module 'ear'
+                }
+              }
+            end
+
+            File.open(ee_pom_file, 'w') { |file|  file.write builder.to_xml }
+            add_parent_pom_to ee_pom_file
+          end
+
+          ee_pom_file
+        end
+
+        def get_ear_pom
+          ear_dir = File.join $rays_config.project_root, "ee/ear"
+          FileUtils.mkdir_p ear_dir unless Dir.exists? ear_dir
+          ear_pom_file = File.join ear_dir, 'pom.xml'
+
+          unless File.exist? ear_pom_file
+            builder = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+              xml.project(:xmlns => 'http://maven.apache.org/POM/4.0.0', :'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+                          :'xsi:schemaLocation' => 'http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd') {
+
+                xml.modelVersion '4.0.0'
+
+                xml._parent do
+                  xml.groupId "#{Project.instance.package}"
+                  xml.artifactId 'ee-parent'
+                  xml.version "#{Project.instance.version}"
+                  xml.relativePath '../pom.xml'
+                end
+
+                xml.name "#{Project.instance.name} EE Container"
+                xml.groupId "#{Project.instance.package}.ear"
+                xml.artifactId 'application'
+                xml.packaging 'ear'
+
+                xml.dependencies
+
+                xml.build {
+                  xml.plugins {
+                    xml.plugin {
+                      xml.groupId 'org.apache.maven.plugins'
+                      xml.artifactId 'maven-ear-plugin'
+
+                      xml.configuration {
+                        xml.defaultJavaBundleDir 'APP-INF/lib'
+                        xml.modules
+                      }
+                    }
+                  }
+                }
+              }
+            end
+
+            doc = Nokogiri::XML(builder.to_xml, &:noblanks)
+            doc.css('project > _parent').first.name = 'parent'
+
+            File.open(ear_pom_file, 'w') { |file|  file.write doc.to_xml }
+
+          end
+
+          ear_pom_file
+        end
+
+
         def parent_group_id
           "#{Project.instance.package}.#{Project.instance.name}"
         end

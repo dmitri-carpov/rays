@@ -58,14 +58,12 @@ module Rays
               " -DarchetypeGroupId=org.codehaus.mojo.archetypes" <<
               " -DarchetypeArtifactId=ejb-javaee6" <<
               " -DarchetypeVersion=1.5" <<
-              " -DgroupId=#{Project.instance.package}.#{app_module.type}" <<
+              " -DgroupId=#{app_module.group_id}" <<
               " -DartifactId=#{app_module.name}" <<
               " -Dversion=#{Project.instance.version}" <<
               " -Dpackaging=war -B"
           rays_exec(create_cmd)
-          Utils::FileUtils.find_down(app_module.path, 'pom\.xml').each do |pom_file|
-            MavenUtil.process_pom pom_file
-          end
+          MavenUtil.process_ejb app_module
         end
       end
     end

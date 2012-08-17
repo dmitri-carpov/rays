@@ -46,6 +46,26 @@ module Rays
         end
       end
 
+      # EAR deployer
+      class EJBDeploy < BaseWorker
+        register :deployer, :ear
+
+        include Singleton
+
+        def deploy(app_module)
+          execute('deploy', app_module) do
+            env = $rays_config.environment
+            file_to_deploy = File.expand_path("./ear/target/#{app_module.name}-#{Project.instance.version}.ear")
+            file_to_deploy = File.expand_path("./ear/target/#{app_module.name}.ear") unless File.exists? file_to_deploy
+            if env.liferay.remote?
+              env.liferay.remote.copy_to(file_to_deploy, env.liferay.service.deploy)
+            else
+              FileUtils.cp(file_to_deploy, env.liferay.service.deploy)
+            end
+          end
+        end
+      end
+
       # EJB deployer
       class EJBDeploy < BaseWorker
         register :deployer, :ejb

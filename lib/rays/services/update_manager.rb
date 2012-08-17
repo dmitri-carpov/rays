@@ -49,6 +49,7 @@ module Rays
         @updaters[Gem::Version.create('1.2.3')] = 'update_1_2_3'
         @updaters[Gem::Version.create('1.2.4')] = 'update_1_2_4'
         @updaters[Gem::Version.create('1.2.5')] = 'update_1_2_5'
+        @updaters[Gem::Version.create('1.2.6')] = 'update_1_2_6'
       end
 
       def check
@@ -126,6 +127,10 @@ module Rays
 
       def update_1_2_5
         $log.info "Update info: fixed ejb jar file path bug"
+      end
+
+      def update_1_2_6
+        $log.info "Update info: added ear packaging"
       end
 
       def sync_version version

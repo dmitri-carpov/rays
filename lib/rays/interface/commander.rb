@@ -153,17 +153,20 @@ class RaysCommand < Clamp::Command
   # BUILDER
   #
   subcommand 'build', 'build module(s). build all modules if under project root or a specific module if under module\'s root' do
-    parameter '[type]', 'a module type [portlet | hook | theme | layout | ext | ejb]'
+    parameter '[type]', 'a module type [portlet | hook | theme | layout | ext | ear]'
     parameter '[name]', 'a module name'
     option '--skip-test', :flag, 'use this option if you want to skip module tests'
 
     def execute
       modules = []
-      if type.nil? and !name.nil?
-        raise RaysException.new("Cannot build type w/o name.")
+      if type.nil? and !name.nil? and !'ear'.eql? type
+        raise RaysException.new("Please specify name for #{type}")
       end
 
-      module_instance = nil
+      if 'ear'.eql? type
+        name = 'application'
+      end
+
       if !type.nil? and !name.nil?
         module_instance = Rays::AppModule::Manager.instance.get(type, name)
       else
@@ -184,17 +187,20 @@ class RaysCommand < Clamp::Command
   # DEPLOYER
   #
   subcommand 'deploy', 'deploy module(s). deploy all modules if under project root or a specific module if under module\'s root' do
-    parameter '[type]', 'a module type [portlet | hook | theme | layout | ext | ejb]'
+    parameter '[type]', 'a module type [portlet | hook | theme | layout | ext | ejb | ear]'
     parameter '[name]', 'a module name'
     option '--skip-test', :flag, 'use this option if you want to skip module tests'
 
     def execute
       modules = []
-      if type.nil? and !name.nil?
-        raise RaysException.new("Cannot build type w/o name.")
+      if type.nil? and !name.nil? and !'ear'.eql? type
+        raise RaysException.new("Please specify name for #{type}")
       end
 
-      module_instance = nil
+      if 'ear'.eql? type
+        name = 'application'
+      end
+
       if !type.nil? and !name.nil?
         module_instance = Rays::AppModule::Manager.instance.get(type, name)
       else
@@ -219,13 +225,17 @@ class RaysCommand < Clamp::Command
   # CLEANER
   #
   subcommand 'clean', 'clean module(s). clean all modules if under project root or a specific module if under module\'s root' do
-    parameter '[type]', 'a module type [portlet | hook | theme | layout | ext | ejb]'
+    parameter '[type]', 'a module type [portlet | hook | theme | layout | ext | ear]'
     parameter '[name]', 'a module name'
 
     def execute
       modules = []
-      if type.nil? and !name.nil?
-        raise RaysException.new("Cannot build type w/o name.")
+      if type.nil? and !name.nil? and !'ear'.eql? type
+        raise RaysException.new("Please specify name for #{type}")
+      end
+
+      if 'ear'.eql? type
+        name = 'application'
       end
 
       module_instance = nil
