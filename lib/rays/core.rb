@@ -101,6 +101,7 @@ module Rays
       require 'rays/models/appmodule/portlet'
       require 'rays/models/appmodule/servicebuilder'
       require 'rays/models/appmodule/ext'
+      require 'rays/models/appmodule/ear'
       require 'rays/models/appmodule/ejb'
       require 'rays/models/appmodule/hook'
       require 'rays/models/appmodule/theme'

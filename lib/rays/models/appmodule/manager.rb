@@ -68,7 +68,7 @@ module Rays
         unless module_class.nil?
           base_path = module_class.base_path
           in_directory(base_path) do
-            if File.exists?(File.join(base_path, "#{name}/.module")) or 'ee-container'.eql? name
+            if File.exists?(File.join(base_path, "#{name}/.module")) or 'application'.eql? name
               app_module = module_class.new(name)
             end
           end

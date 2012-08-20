@@ -47,7 +47,7 @@ module Rays
       end
 
       # EAR deployer
-      class EJBDeploy < BaseWorker
+      class EARDeploy < BaseWorker
         register :deployer, :ear
 
         include Singleton

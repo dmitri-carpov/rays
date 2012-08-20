@@ -164,6 +164,9 @@ module Rays
       end
 
       def path
+        if 'ear'.eql? type
+          return self.class.base_path
+        end
         File.join(self.class.base_path, @name)
       end
 

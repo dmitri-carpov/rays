@@ -50,6 +50,7 @@ module Rays
         @updaters[Gem::Version.create('1.2.4')] = 'update_1_2_4'
         @updaters[Gem::Version.create('1.2.5')] = 'update_1_2_5'
         @updaters[Gem::Version.create('1.2.6')] = 'update_1_2_6'
+        @updaters[Gem::Version.create('1.2.6')] = 'update_1_2_7'
       end
 
       def check
@@ -131,6 +132,10 @@ module Rays
 
       def update_1_2_6
         $log.info "Update info: added ear packaging"
+      end
+
+      def update_1_2_7
+        $log.info "Update info: fixed ear packaging bugs"
       end
 
       def sync_version version

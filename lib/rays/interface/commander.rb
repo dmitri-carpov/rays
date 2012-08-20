@@ -159,8 +159,9 @@ class RaysCommand < Clamp::Command
 
     def execute
       modules = []
-      if type.nil? and !name.nil? and !'ear'.eql? type
-        raise RaysException.new("Please specify name for #{type}")
+      if !type.nil? and name.nil? and !'ear'.eql? type
+        $log.error "Please specify the name of #{type}"
+        return
       end
 
       if 'ear'.eql? type
@@ -193,8 +194,9 @@ class RaysCommand < Clamp::Command
 
     def execute
       modules = []
-      if type.nil? and !name.nil? and !'ear'.eql? type
-        raise RaysException.new("Please specify name for #{type}")
+      if !type.nil? and name.nil? and !'ear'.eql? type
+        $log.error "Please specify the name of #{type}"
+        return
       end
 
       if 'ear'.eql? type
