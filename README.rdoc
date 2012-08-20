@@ -36,13 +36,13 @@ Follow rvm instructions or just reopen shell window.
  make sure you have installed libxml2 development packages.
  Ubuntu: $ sudo apt-get install libxslt-dev libxml2-dev
 
-=== 3. Install ruby 1.9.3 or higher
- $ rvm install 1.9.3
+=== 3. Install ruby 1.9.3-p0
+ $ rvm install 1.9.3-p0
 
- NOTE: for XCode 4.2.x execute $ rvm install 1.9.3 --with-gcc=clang
+ NOTE: for XCode 4.2.x execute $ rvm install 1.9.3-p0 --with-gcc=clang
 
-Make version 1.9.3 default
- $ rvm --default use 1.9.3
+Make version 1.9.3-p0 default
+ $ rvm --default use 1.9.3-p0
 
 === 4. Install maven (http://maven.apache.org)
 - Download a bin from (http://maven.apache.org/download.html)
