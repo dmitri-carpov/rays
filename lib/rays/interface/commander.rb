@@ -159,17 +159,17 @@ class RaysCommand < Clamp::Command
 
     def execute
       modules = []
-      if !type.nil? and name.nil? and !'ear'.eql? type
-        $log.error "Please specify the name of #{type}"
-        return
+      module_name = name
+      if !type.nil? and module_name.nil? and !'ear'.eql? type
+        raise RaysException.new("Please specify the name of #{type}")
       end
 
       if 'ear'.eql? type
-        name = 'application'
+        module_name = 'application'
       end
 
-      if !type.nil? and !name.nil?
-        module_instance = Rays::AppModule::Manager.instance.get(type, name)
+      if !type.nil? and !module_name.nil?
+        module_instance = Rays::AppModule::Manager.instance.get(type, module_name)
       else
         module_instance = Rays::AppModule::Manager.instance.get_from_path(Dir.pwd)
       end
@@ -194,17 +194,17 @@ class RaysCommand < Clamp::Command
 
     def execute
       modules = []
-      if !type.nil? and name.nil? and !'ear'.eql? type
-        $log.error "Please specify the name of #{type}"
-        return
+      module_name = name
+      if !type.nil? and module_name.nil? and !'ear'.eql? type
+        raise RaysException.new("Please specify the name of #{type}")
       end
 
       if 'ear'.eql? type
-        name = 'application'
+        module_name = 'application'
       end
 
-      if !type.nil? and !name.nil?
-        module_instance = Rays::AppModule::Manager.instance.get(type, name)
+      if !type.nil? and !module_name.nil?
+        module_instance = Rays::AppModule::Manager.instance.get(type, module_name)
       else
         module_instance = Rays::AppModule::Manager.instance.get_from_path(Dir.pwd)
       end
@@ -232,17 +232,17 @@ class RaysCommand < Clamp::Command
 
     def execute
       modules = []
-      if type.nil? and !name.nil? and !'ear'.eql? type
-        raise RaysException.new("Please specify name for #{type}")
+      module_name = name
+      if !type.nil? and module_name.nil? and !'ear'.eql? type
+        raise RaysException.new("Please specify the name of #{type}")
       end
 
       if 'ear'.eql? type
-        name = 'application'
+        module_name = 'application'
       end
 
-      module_instance = nil
-      if !type.nil? and !name.nil?
-        module_instance = Rays::AppModule::Manager.instance.get(type, name)
+      if !type.nil? and !module_name.nil?
+        module_instance = Rays::AppModule::Manager.instance.get(type, module_name)
       else
         module_instance = Rays::AppModule::Manager.instance.get_from_path(Dir.pwd)
       end

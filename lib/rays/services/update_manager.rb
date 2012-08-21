@@ -50,7 +50,8 @@ module Rays
         @updaters[Gem::Version.create('1.2.4')] = 'update_1_2_4'
         @updaters[Gem::Version.create('1.2.5')] = 'update_1_2_5'
         @updaters[Gem::Version.create('1.2.6')] = 'update_1_2_6'
-        @updaters[Gem::Version.create('1.2.6')] = 'update_1_2_7'
+        @updaters[Gem::Version.create('1.2.7')] = 'update_1_2_7'
+        @updaters[Gem::Version.create('1.2.8')] = 'update_1_2_8'
       end
 
       def check
@@ -63,7 +64,7 @@ module Rays
           end
           update
         elsif @current_version > @updaters.keys.max
-          $log.error "Your project version is higher than rays one.\nIt is highly recommended to upgrade your rays ('<!gem update raystool!>') before continue.\nPress 'Enter' to continue or 'ctrl+c' to abort."
+          $log.error "Your project version #{@current_version.to_s} is higher than the rays one #{@updaters.keys.max}.\nIt is highly recommended to upgrade your rays ('<!gem update raystool!>') before continue.\nPress 'Enter' to continue or 'ctrl+c' to abort."
           begin
             STDIN.gets.chomp
           rescue Interrupt
@@ -136,6 +137,10 @@ module Rays
 
       def update_1_2_7
         $log.info "Update info: fixed ear packaging bugs"
+      end
+
+      def update_1_2_8
+        $log.info "Update info: improved errors log"
       end
 
       def sync_version version
