@@ -30,5 +30,7 @@ begin
   end
   require 'rays/interface/commander'
   RaysCommand.run('rays', ARGV, {})
+rescue SystemExit, Interrupt
 rescue => e
+  $log.error e.message
 end
